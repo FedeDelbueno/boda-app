@@ -33,12 +33,12 @@ const Hero = () => {
       {/* Flores decorativas en esquinas */}
       <img
         src="/images/lavender.png"
-        className="absolute top-0 left-0 w-28 md:w-48 opacity-[0.07] grayscale pointer-events-none scale-x-[-1]"
+        className="absolute top-0 left-0 w-28 md:w-48 opacity-[0.15] pointer-events-none scale-x-[-1]"
         alt=""
       />
       <img
         src="/images/lavender.png"
-        className="absolute bottom-0 right-0 w-28 md:w-48 opacity-[0.07] grayscale pointer-events-none"
+        className="absolute bottom-0 right-0 w-28 md:w-48 opacity-[0.15] pointer-events-none"
         alt=""
       />
 
@@ -74,7 +74,7 @@ const Hero = () => {
         <motion.h1
           className="font-script leading-[1.15] mb-0"
           style={{
-            fontSize: "clamp(1.75rem, 7vw, 7rem)",
+            fontSize: "clamp(2.2rem, 11vw, 7rem)",
             color: "#4A2E00",
             textShadow: "0 2px 8px rgba(255,255,255,0.5), 0 1px 2px rgba(0,0,0,0.08)",
           }}
@@ -92,7 +92,7 @@ const Hero = () => {
             className="flex-1 max-w-[70px]"
             style={{ height: "1px", background: "linear-gradient(90deg, transparent, #D4AF37)" }}
           />
-          <span className="font-body italic text-base md:text-2xl" style={{ color: "#4A2E00" }}>
+          <span className="font-body italic text-xl md:text-2xl" style={{ color: "#4A2E00" }}>
             &amp;
           </span>
           <div
@@ -105,7 +105,7 @@ const Hero = () => {
         <motion.h1
           className="font-script leading-[1.15] mb-4"
           style={{
-            fontSize: "clamp(1.75rem, 7vw, 7rem)",
+            fontSize: "clamp(2.2rem, 11vw, 7rem)",
             color: "#4A2E00",
             textShadow: "0 2px 8px rgba(255,255,255,0.5), 0 1px 2px rgba(0,0,0,0.08)",
           }}

@@ -1,9 +1,12 @@
 const Footer = () => {
   return (
     <footer
-      className="py-14 px-6 md:px-20 text-center"
+      className="relative py-14 px-6 md:px-20 text-center overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #3D2800, #4A3000, #5C3A00)' }}
     >
+      {/* Lavenders decorativos muy sutiles sobre el fondo oscuro */}
+      <img src="/images/lavender.png" className="absolute top-0 left-0 w-24 md:w-36 opacity-[0.12] pointer-events-none scale-x-[-1]" alt="" />
+      <img src="/images/lavender.png" className="absolute top-0 right-0 w-24 md:w-36 opacity-[0.12] pointer-events-none" alt="" />
       <p
         className="font-script mb-4 drop-shadow"
         style={{ color: '#FDE68A', fontSize: 'clamp(2rem, 5vw, 3rem)' }}

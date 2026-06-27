@@ -4,13 +4,17 @@ import { FaMusic } from "react-icons/fa";
 const SongsSection = () => {
   return (
     <motion.section
-      className="py-12 md:py-20 px-6 md:px-20 text-center flex flex-col items-center gap-5 md:gap-6"
+      className="relative py-12 md:py-20 px-6 md:px-20 text-center flex flex-col items-center gap-5 md:gap-6 overflow-hidden"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 1 }}
       style={{ background: "#FAF3E0" }}
     >
+      {/* Lavenders decorativos */}
+      <img src="/images/lavender.png" className="absolute top-1/2 -translate-y-1/2 left-0 w-28 md:w-44 opacity-[0.18] pointer-events-none scale-x-[-1]" alt="" />
+      <img src="/images/lavender.png" className="absolute top-1/2 -translate-y-1/2 right-0 w-28 md:w-44 opacity-[0.18] pointer-events-none" alt="" />
+
       {/* Icono */}
       <div
         className="w-14 h-14 rounded-full flex items-center justify-center shadow-md"

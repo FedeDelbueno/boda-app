@@ -50,7 +50,11 @@ const itemVariants = {
 
 const EventDetails = () => {
   return (
-    <section className="py-12 md:py-20 px-6 md:px-20" style={{ background: "#FDFAF2" }}>
+    <section className="relative py-12 md:py-20 px-6 md:px-20 overflow-hidden" style={{ background: "#FDFAF2" }}>
+
+      {/* Lavenders decorativos */}
+      <img src="/images/lavender.png" className="absolute top-0 right-0 w-32 md:w-52 opacity-[0.18] pointer-events-none" alt="" />
+      <img src="/images/lavender.png" className="absolute bottom-0 left-0 w-32 md:w-52 opacity-[0.18] pointer-events-none scale-x-[-1]" alt="" />
 
       {/* Encabezado */}
       <motion.div

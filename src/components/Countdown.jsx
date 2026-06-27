@@ -26,9 +26,9 @@ const Countdown = ({ targetDate }) => {
       <div
         className="pulse-gold flex items-center justify-center rounded-full font-serif font-bold"
         style={{
-          width: "clamp(58px, 15vw, 96px)",
-          height: "clamp(58px, 15vw, 96px)",
-          fontSize: "clamp(1.1rem, 4.5vw, 1.85rem)",
+          width: "clamp(72px, 18vw, 96px)",
+          height: "clamp(72px, 18vw, 96px)",
+          fontSize: "clamp(1.35rem, 5.5vw, 1.85rem)",
           background:
             "linear-gradient(135deg, rgba(255,255,255,0.4), rgba(253,230,138,0.25))",
           border: "1.5px solid rgba(212,175,55,0.6)",
@@ -38,7 +38,7 @@ const Countdown = ({ targetDate }) => {
         {String(value).padStart(2, "0")}
       </div>
       <span
-        className="mt-2 font-body italic text-[10px] md:text-xs"
+        className="mt-2 font-body italic text-xs md:text-sm"
         style={{ color: "#7D6212", letterSpacing: "0.18em" }}
       >
         {label}
