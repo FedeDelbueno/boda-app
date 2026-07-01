@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const RSVP_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdyNJREO7GgLJ4zIgzSl2RLZT8wcv0kC7lrt0KxrFvHKTZMXA/viewform?usp=publish-editor";
+  "https://docs.google.com/forms/d/e/1FAIpQLScmPzheLlAbxh9m6CUp-oqzpcTSWjQZCTRZ_M51sCM_xacFEw/viewform?usp=publish-editor";
 
 const FloatingRSVPReminder = () => {
   const [visible, setVisible] = useState(false);

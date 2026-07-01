@@ -1,7 +1,13 @@
-import { motion } from "framer-motion";
-import { FaMusic } from "react-icons/fa";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaMusic, FaChevronDown } from "react-icons/fa";
+
+const SONGS_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdoJYCbdAeQ9-CNzkUGpYQD4wFmG48dSfGPkYk6OSIdtilvfw/viewform?usp=publish-editor";
 
 const SongsSection = () => {
+  const [formOpen, setFormOpen] = useState(false);
+
   return (
     <motion.section
       id="musica"
@@ -40,16 +46,71 @@ const SongsSection = () => {
         quieras escuchar y bailar con nosotros.
       </p>
 
-      <motion.a
-        href="https://docs.google.com/forms/d/e/1FAIpQLSfwShrV1yQcE4sIoonvcv2rjqSrOsVs5LHeSO-spjRPc8-VfQ/viewform?usp=publish-editor"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-gold"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.97 }}
-      >
-        Agregar canción a la playlist
-      </motion.a>
+      <div className="w-full max-w-xl flex flex-col items-center gap-3">
+        <motion.button
+          onClick={() => setFormOpen((o) => !o)}
+          className="font-body font-semibold text-lg px-9 py-3.5 rounded-full flex items-center gap-2.5"
+          style={{
+            background: "linear-gradient(135deg, #C7A063, #B0813F)",
+            color: "#F6F1E7",
+            boxShadow: "0 6px 20px rgba(176,129,63,0.4)",
+          }}
+          whileTap={{ scale: 0.96 }}
+          aria-expanded={formOpen}
+        >
+          Ver formulario
+          <motion.span
+            animate={{ rotate: formOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="inline-flex"
+          >
+            <FaChevronDown />
+          </motion.span>
+        </motion.button>
+
+        <AnimatePresence initial={false}>
+          {formOpen && (
+            <motion.div
+              key="songs-form"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="w-full overflow-hidden flex flex-col items-center gap-3"
+            >
+              <div
+                className="w-full rounded-2xl overflow-hidden"
+                style={{
+                  background: "#FFFFFF",
+                  border: "1.5px solid rgba(176,129,63,0.35)",
+                  boxShadow: "0 10px 40px rgba(32,48,42,0.12)",
+                }}
+              >
+                <iframe
+                  src={`${SONGS_URL.split("?")[0]}?embedded=true`}
+                  title="Sugerencias de canciones"
+                  width="100%"
+                  height="650"
+                  frameBorder="0"
+                  style={{ display: "block" }}
+                >
+                  Cargando…
+                </iframe>
+              </div>
+
+              <a
+                href={SONGS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-body text-sm underline"
+                style={{ color: "#8B6530" }}
+              >
+                ¿No se ve el formulario? Abrilo en una pestaña nueva
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.section>
   );
 };

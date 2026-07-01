@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { FaCamera } from "react-icons/fa";
 import { QRCodeSVG } from "qrcode.react";
 
-// Reemplazá con el link real de tu carpeta de Google Drive / álbum compartido
-const DRIVE_URL = "https://drive.google.com/drive/folders/REEMPLAZAR_CON_LINK_REAL";
+// Reemplazá SITE_URL por el dominio real donde quede publicado el sitio
+// (ej: "https://lucia-y-agustin.com"). En desarrollo local podés dejar
+// window.location.origin, que ya apunta a tu localhost.
+const SITE_URL = window.location.origin;
+const DRIVE_URL = `${SITE_URL}/subir-fotos.html`;
 
 const DrivePhotoSection = () => {
   return (

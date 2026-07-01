@@ -1,10 +1,13 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaHeart, FaChevronDown } from "react-icons/fa";
 
 const RSVP_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdyNJREO7GgLJ4zIgzSl2RLZT8wcv0kC7lrt0KxrFvHKTZMXA/viewform?usp=publish-editor";
+  "https://docs.google.com/forms/d/e/1FAIpQLScmPzheLlAbxh9m6CUp-oqzpcTSWjQZCTRZ_M51sCM_xacFEw/viewform?usp=publish-editor";
 
 const RSVPSection = () => {
+  const [formOpen, setFormOpen] = useState(false);
+
   return (
     <motion.section
       id="rsvp"
@@ -90,26 +93,70 @@ const RSVPSection = () => {
         ))}
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-3">
-        <motion.a
-          href={RSVP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-gold text-lg md:text-xl px-10 md:px-14 py-4 font-bold"
-          animate={{
-            scale: [1, 1.07, 1],
-            boxShadow: [
-              "0 4px 20px rgba(176,129,63,0.4)",
-              "0 10px 50px rgba(176,129,63,0.85)",
-              "0 4px 20px rgba(176,129,63,0.4)",
-            ],
+      <div className="relative z-10 flex flex-col items-center gap-3 w-full max-w-xl">
+        <motion.button
+          onClick={() => setFormOpen((o) => !o)}
+          className="font-body font-semibold text-lg px-9 py-3.5 rounded-full flex items-center gap-2.5"
+          style={{
+            background: "linear-gradient(135deg, #C7A063, #B0813F)",
+            color: "#F6F1E7",
+            boxShadow: "0 6px 20px rgba(176,129,63,0.4)",
           }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          whileHover={{ scale: 1.12 }}
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.96 }}
+          aria-expanded={formOpen}
         >
-          ¡Confirmar asistencia!
-        </motion.a>
+          Ver formulario
+          <motion.span
+            animate={{ rotate: formOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="inline-flex"
+          >
+            <FaChevronDown />
+          </motion.span>
+        </motion.button>
+
+        <AnimatePresence initial={false}>
+          {formOpen && (
+            <motion.div
+              key="rsvp-form"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="w-full overflow-hidden flex flex-col items-center gap-3"
+            >
+              <div
+                className="w-full rounded-2xl overflow-hidden"
+                style={{
+                  background: "#FFFFFF",
+                  border: "1.5px solid rgba(176,129,63,0.35)",
+                  boxShadow: "0 10px 40px rgba(32,48,42,0.15)",
+                }}
+              >
+                <iframe
+                  src={`${RSVP_URL.split("?")[0]}?embedded=true`}
+                  title="Confirmación de asistencia"
+                  width="100%"
+                  height="900"
+                  frameBorder="0"
+                  style={{ display: "block" }}
+                >
+                  Cargando…
+                </iframe>
+              </div>
+
+              <a
+                href={RSVP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-body text-sm underline"
+                style={{ color: "#8B6530" }}
+              >
+                ¿No se ve el formulario? Abrilo en una pestaña nueva
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <p className="font-body italic text-base z-10" style={{ color: "#8B6530" }}>
           ¡Va a ser una noche que no vas a olvidar! ✨
