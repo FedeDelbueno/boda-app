@@ -16,9 +16,9 @@ const PETALS = [
 ];
 
 const BACKGROUNDS = [
-  "radial-gradient(circle, rgba(212,175,55,0.6), rgba(253,230,138,0.15))",
-  "radial-gradient(circle, rgba(249,226,122,0.55), rgba(212,175,55,0.1))",
-  "radial-gradient(circle, rgba(255,255,255,0.7), rgba(253,230,138,0.3))",
+  "radial-gradient(circle, rgba(176,129,63,0.55), rgba(199,160,99,0.12))",
+  "radial-gradient(circle, rgba(124,144,114,0.5), rgba(176,129,63,0.1))",
+  "radial-gradient(circle, rgba(246,241,231,0.6), rgba(199,160,99,0.25))",
 ];
 
 const FloatingPetals = () => (
@@ -34,7 +34,7 @@ const FloatingPetals = () => (
           bottom: "-5%",
           borderRadius: square ? "2px" : "50%",
           background: BACKGROUNDS[id % 3],
-          boxShadow: `0 0 ${size + 2}px rgba(212,175,55,0.4)`,
+          boxShadow: `0 0 ${size + 2}px rgba(176,129,63,0.35)`,
         }}
         animate={{
           y: [0, -1500],

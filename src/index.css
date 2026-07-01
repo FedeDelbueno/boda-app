@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ======== Keyframes (fuera de @layer para que funcionen globalmente) ======== */
+/* ======== Keyframes ======== */
 
 @keyframes text-shimmer {
   0%   { background-position: -250% center; }
@@ -18,23 +18,23 @@
   0%, 100% {
     box-shadow:
       0 4px 20px rgba(0,0,0,0.06),
-      0 0 0 0 rgba(212,175,55,0.55),
+      0 0 0 0 rgba(176,129,63,0.55),
       inset 0 1px 0 rgba(255,255,255,0.5);
   }
   50% {
     box-shadow:
       0 4px 20px rgba(0,0,0,0.06),
-      0 0 0 20px rgba(212,175,55,0),
+      0 0 0 20px rgba(176,129,63,0),
       inset 0 1px 0 rgba(255,255,255,0.5);
   }
 }
 
 @keyframes card-ambient {
   0%, 100% {
-    box-shadow: 0 4px 20px rgba(212,175,55,0.08), 0 0 0 1px rgba(212,175,55,0.22);
+    box-shadow: 0 4px 20px rgba(176,129,63,0.08), 0 0 0 1px rgba(176,129,63,0.22);
   }
   50% {
-    box-shadow: 0 10px 40px rgba(212,175,55,0.2), 0 0 0 1px rgba(212,175,55,0.45);
+    box-shadow: 0 10px 40px rgba(176,129,63,0.2), 0 0 0 1px rgba(176,129,63,0.45);
   }
 }
 
@@ -50,8 +50,8 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background-color: #FFFEF9;
-    color: #4A3520;
+    background-color: #F6F1E7;
+    color: #2A2A28;
     font-family: 'Cormorant Garamond', Georgia, serif;
     -webkit-font-smoothing: antialiased;
   }
@@ -66,60 +66,60 @@
 @layer components {
   /* ---- Botones ---- */
   .btn-gold {
-    @apply inline-block px-8 py-3 rounded-full font-body font-semibold tracking-wider transition-all duration-200 min-h-[48px];
-    background: linear-gradient(135deg, #FDE68A 0%, #D4AF37 50%, #B8962E 100%);
-    color: #3D2800;
-    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+    @apply inline-block px-8 py-4 rounded-full font-body font-semibold tracking-wider transition-all duration-200 min-h-[56px] text-lg;
+    background: linear-gradient(135deg, #C7A063 0%, #B0813F 50%, #8B6530 100%);
+    color: #F6F1E7;
+    box-shadow: 0 4px 20px rgba(176, 129, 63, 0.35);
   }
   .btn-gold:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 28px rgba(212, 175, 55, 0.55);
+    box-shadow: 0 6px 28px rgba(176, 129, 63, 0.55);
   }
 
   .btn-ghost-gold {
-    @apply inline-block px-8 py-3 rounded-full font-body font-semibold tracking-wider transition-all duration-200 min-h-[48px];
-    background: rgba(255, 255, 255, 0.2);
-    border: 1.5px solid rgba(255, 255, 255, 0.5);
-    color: #3D2800;
+    @apply inline-block px-8 py-4 rounded-full font-body font-semibold tracking-wider transition-all duration-200 min-h-[56px] text-lg;
+    background: rgba(246, 241, 231, 0.15);
+    border: 1.5px solid rgba(246, 241, 231, 0.5);
+    color: #F6F1E7;
     backdrop-filter: blur(4px);
   }
   .btn-ghost-gold:hover {
     transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.32);
+    background: rgba(246, 241, 231, 0.25);
   }
 
   /* ---- Divisor ---- */
   .gold-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #D4AF37 30%, #B8962E 50%, #D4AF37 70%, transparent);
+    background: linear-gradient(90deg, transparent, #B0813F 30%, #8B6530 50%, #B0813F 70%, transparent);
     width: 80%;
     margin: 0 auto;
   }
 
   /* ---- Etiqueta de sección ---- */
   .section-label {
-    @apply font-body italic text-sm uppercase;
+    @apply font-body italic text-base uppercase;
     letter-spacing: 0.3em;
   }
 
   /* ---- Card con glow animado ---- */
   .card-gold {
     @apply bg-white rounded-2xl;
-    border: 1px solid rgba(212, 175, 55, 0.28);
+    border: 1px solid rgba(176, 129, 63, 0.28);
     animation: card-ambient 4s ease-in-out infinite;
   }
 
-  /* ---- Shimmer en texto — pico cálido dorado, sin blanco ---- */
+  /* ---- Shimmer en texto ---- */
   .shimmer-text {
     background: linear-gradient(
       90deg,
-      #7D6212  0%,
-      #C9A227  20%,
-      #F9E27A  38%,
-      #FDE68A  50%,
-      #F9E27A  62%,
-      #C9A227  80%,
-      #7D6212  100%
+      #8B6530  0%,
+      #B0813F  20%,
+      #D4A96A  38%,
+      #C7A063  50%,
+      #D4A96A  62%,
+      #B0813F  80%,
+      #8B6530  100%
     );
     background-size: 250% auto;
     -webkit-background-clip: text;
@@ -129,7 +129,7 @@
     animation: text-shimmer 5s linear infinite;
   }
 
-  /* ---- Pulso dorado para círculos countdown ---- */
+  /* ---- Pulso latón para círculos countdown ---- */
   .pulse-gold {
     animation: golden-pulse 2.5s ease-out infinite;
   }

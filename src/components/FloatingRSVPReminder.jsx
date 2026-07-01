@@ -11,11 +11,9 @@ const FloatingRSVPReminder = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (dismissed) return;
-      const rsvp = document.getElementById("rsvp-section");
+      const rsvp = document.getElementById("rsvp");
       if (!rsvp) return;
-      // Aparece cuando el RSVP section ya salió completamente por arriba del viewport
       const pastRSVP = rsvp.getBoundingClientRect().bottom < 0;
-      // Se oculta cuando el usuario está muy cerca del final de la página
       const scrollY = window.scrollY;
       const total = document.documentElement.scrollHeight - window.innerHeight;
       const nearEnd = total > 0 && scrollY / total > 0.91;
@@ -39,12 +37,12 @@ const FloatingRSVPReminder = () => {
         >
           <motion.div
             className="w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden"
-            style={{ border: "1.5px solid rgba(212,175,55,0.55)" }}
+            style={{ border: "1.5px solid rgba(199,160,99,0.5)" }}
             animate={{
               boxShadow: [
-                "0 8px 30px rgba(212,175,55,0.25)",
-                "0 10px 50px rgba(212,175,55,0.65)",
-                "0 8px 30px rgba(212,175,55,0.25)",
+                "0 8px 30px rgba(32,48,42,0.35)",
+                "0 10px 50px rgba(32,48,42,0.6)",
+                "0 8px 30px rgba(32,48,42,0.35)",
               ],
             }}
             transition={{ duration: 2.5, repeat: Infinity }}
@@ -52,15 +50,15 @@ const FloatingRSVPReminder = () => {
             <div
               className="px-4 py-3 flex items-center justify-between gap-2"
               style={{
-                background: "linear-gradient(135deg, #FDE68A 0%, #D4AF37 60%, #C9A227 100%)",
+                background: "linear-gradient(135deg, #20302A 0%, #2c4438 60%, #20302A 100%)",
               }}
             >
               {/* Texto */}
               <div className="flex-1 min-w-0">
-                <p className="font-body font-bold text-amber-900 text-sm leading-tight">
+                <p className="font-body font-bold text-sm leading-tight" style={{ color: "#F6F1E7" }}>
                   ¡No olvides confirmar tu asistencia!
                 </p>
-                <p className="font-body text-amber-800 text-xs mt-0.5">
+                <p className="font-body text-xs mt-0.5" style={{ color: "#C7A063" }}>
                   Antes del 01/10/2026
                 </p>
               </div>
@@ -70,10 +68,11 @@ const FloatingRSVPReminder = () => {
                 href={RSVP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body font-bold text-amber-900 text-sm px-3 py-2 rounded-xl whitespace-nowrap flex-shrink-0"
+                className="font-body font-bold text-sm px-3 py-2 rounded-xl whitespace-nowrap flex-shrink-0"
                 style={{
-                  background: "rgba(255,255,255,0.42)",
-                  border: "1px solid rgba(255,255,255,0.65)",
+                  background: "rgba(199,160,99,0.25)",
+                  border: "1px solid rgba(199,160,99,0.6)",
+                  color: "#F6F1E7",
                 }}
                 animate={{ scale: [1, 1.07, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
@@ -84,7 +83,8 @@ const FloatingRSVPReminder = () => {
 
               {/* Cerrar */}
               <button
-                className="text-amber-800 hover:text-amber-950 text-sm leading-none flex-shrink-0 ml-1"
+                className="text-sm leading-none flex-shrink-0 ml-1 transition-opacity hover:opacity-70"
+                style={{ color: "#C7A063" }}
                 onClick={() => setDismissed(true)}
                 aria-label="Cerrar recordatorio"
               >

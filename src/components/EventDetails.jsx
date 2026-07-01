@@ -1,42 +1,5 @@
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { FaChurch, FaGlassCheers } from "react-icons/fa";
-
-const TiltCard = ({ children }) => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7, -7]), {
-    stiffness: 260,
-    damping: 30,
-  });
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-7, 7]), {
-    stiffness: 260,
-    damping: 30,
-  });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set((e.clientX - rect.left - rect.width / 2) / rect.width);
-    mouseY.set((e.clientY - rect.top - rect.height / 2) / rect.height);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
-  return (
-    <motion.div
-      className="card-gold p-6 md:p-10 flex flex-col items-center text-center cursor-default"
-      style={{ rotateX, rotateY, transformPerspective: 1000 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      whileHover={{ scale: 1.03 }}
-    >
-      {children}
-    </motion.div>
-  );
-};
+import { motion } from "framer-motion";
+import { FaRing, FaGlassCheers, FaMapMarkerAlt } from "react-icons/fa";
 
 const containerVariants = {
   hidden: {},
@@ -50,13 +13,11 @@ const itemVariants = {
 
 const EventDetails = () => {
   return (
-    <section className="relative py-12 md:py-20 px-6 md:px-20 overflow-hidden" style={{ background: "#FDFAF2" }}>
+    <section id="evento" className="relative py-12 md:py-20 px-6 md:px-20 overflow-hidden" style={{ background: "#F6F1E7" }}>
 
-      {/* Lavenders decorativos */}
-      <img src="/images/lavender.png" className="absolute top-0 right-0 w-32 md:w-52 opacity-[0.18] pointer-events-none" alt="" />
-      <img src="/images/lavender.png" className="absolute bottom-0 left-0 w-32 md:w-52 opacity-[0.18] pointer-events-none scale-x-[-1]" alt="" />
+      <img src="/images/lavender.png" className="absolute top-0 right-0 w-32 md:w-52 opacity-[0.15] pointer-events-none" alt="" />
+      <img src="/images/lavender.png" className="absolute bottom-0 left-0 w-32 md:w-52 opacity-[0.15] pointer-events-none scale-x-[-1]" alt="" />
 
-      {/* Encabezado */}
       <motion.div
         className="text-center mb-8 md:mb-14"
         variants={containerVariants}
@@ -64,78 +25,96 @@ const EventDetails = () => {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <motion.p className="section-label text-amber-600 mb-3" variants={itemVariants}>
-          — Los esperamos el 25 de noviembre —
+        <motion.p
+          className="font-body uppercase mb-3"
+          style={{ fontSize: "0.72rem", letterSpacing: "0.42em", color: "#B0813F" }}
+          variants={itemVariants}
+        >
+          El gran día
         </motion.p>
-        <motion.h2 className="font-serif text-3xl md:text-4xl font-bold text-amber-900" variants={itemVariants}>
-          Detalles del Evento
+        <motion.h2
+          className="font-script drop-shadow"
+          style={{ color: "#20302A", fontSize: "clamp(2.2rem, 8vw, 4rem)" }}
+          variants={itemVariants}
+        >
+          ¿Cuándo y dónde?
         </motion.h2>
+        <motion.p
+          className="font-body mt-3 max-w-md mx-auto"
+          style={{ color: "#5a5a52", fontSize: "1.05rem" }}
+          variants={itemVariants}
+        >
+          Ceremonia y fiesta, todo en el mismo lugar. Reservá la fecha y vení a celebrar con nosotros.
+        </motion.p>
         <motion.div className="gold-divider mt-5 max-w-xs" variants={itemVariants} />
       </motion.div>
 
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-4xl mx-auto"
+        className="max-w-xl mx-auto"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {/* Ceremonia */}
-        <motion.div variants={itemVariants}>
-          <TiltCard>
+        <motion.div
+          className="card-gold p-8 md:p-12 flex flex-col items-center text-center gap-8"
+          variants={itemVariants}
+        >
+          {/* Lugar */}
+          <div className="flex flex-col items-center gap-3">
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-md"
-              style={{ background: "linear-gradient(135deg, #FDE68A, #D4AF37)" }}
+              className="w-20 h-20 rounded-full flex items-center justify-center shadow-md"
+              style={{ background: "linear-gradient(135deg, #C7A063, #B0813F)" }}
             >
-              <FaChurch className="text-2xl text-amber-900" />
+              <FaMapMarkerAlt className="text-3xl" style={{ color: "#F6F1E7" }} />
             </div>
-            <h3 className="font-serif text-2xl font-bold text-amber-900 mb-3">Ceremonia</h3>
-            <div className="w-10 h-px mb-5" style={{ background: "#D4AF37" }} />
-            <p className="font-body text-lg text-amber-800 mb-1">
-              25 de noviembre a las <strong>20:00</strong> horas
-            </p>
-            <p className="font-body text-lg text-amber-700 mb-7">
-              Parroquia Sagrado Corazón de Jesús
+            <h3 className="font-serif text-3xl font-bold" style={{ color: "#20302A" }}>El lugar</h3>
+            <div className="w-10 h-px" style={{ background: "#B0813F" }} />
+            <p className="font-body text-xl leading-relaxed" style={{ color: "#2A2A28" }}>
+              Calle 425 entre 206 y 216<br />
+              <strong>Arturo Seguí</strong>
             </p>
             <a
-              href="https://maps.google.com/?q=Parroquia+Sagrado+Corazon+de+Jesus"
+              href="https://www.google.com/maps/place/34%C2%B055'59.7%22S+58%C2%B009'22.5%22W/@-34.933236,-58.1588349,722m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-34.933236!4d-58.15626?entry=ttu&g_ep=EgoyMDI2MDYyOC4wIKXMDSoASAFQAw%3D%3D"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-body font-semibold mt-auto tracking-wide transition-opacity hover:opacity-70"
-              style={{ color: "#B8962E" }}
+              className="font-body font-semibold tracking-wide transition-opacity hover:opacity-70 text-lg"
+              style={{ color: "#B0813F" }}
             >
               Ver en Google Maps →
             </a>
-          </TiltCard>
-        </motion.div>
+          </div>
 
-        {/* Fiesta */}
-        <motion.div variants={itemVariants}>
-          <TiltCard>
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-md"
-              style={{ background: "linear-gradient(135deg, #FDE68A, #D4AF37)" }}
-            >
-              <FaGlassCheers className="text-2xl text-amber-900" />
+          <div className="w-full h-px" style={{ background: "linear-gradient(90deg, transparent, #B0813F, transparent)" }} />
+
+          {/* Programa */}
+          <div className="flex flex-col gap-6 w-full">
+            <div className="flex items-center gap-5">
+              <div
+                className="w-14 h-14 shrink-0 rounded-full flex items-center justify-center shadow"
+                style={{ background: "linear-gradient(135deg, #C7A063, #B0813F)" }}
+              >
+                <FaRing className="text-2xl" style={{ color: "#F6F1E7" }} />
+              </div>
+              <div className="text-left">
+                <p className="font-serif text-2xl font-bold" style={{ color: "#20302A" }}>Ceremonia Civil</p>
+                <p className="font-body text-xl" style={{ color: "#5a5a52" }}>21 de noviembre · <strong>18:00 hs</strong></p>
+              </div>
             </div>
-            <h3 className="font-serif text-2xl font-bold text-amber-900 mb-3">Fiesta</h3>
-            <div className="w-10 h-px mb-5" style={{ background: "#D4AF37" }} />
-            <p className="font-body text-lg text-amber-800 mb-1">
-              Después de la ceremonia, a las <strong>21:00</strong> hs
-            </p>
-            <p className="font-body text-lg text-amber-700 mb-7">
-              Asociación Rural General Madariaga
-            </p>
-            <a
-              href="https://maps.google.com/?q=Asociacion+Rural+General+Madariaga"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-body font-semibold mt-auto tracking-wide transition-opacity hover:opacity-70"
-              style={{ color: "#B8962E" }}
-            >
-              Ver en Google Maps →
-            </a>
-          </TiltCard>
+
+            <div className="flex items-center gap-5">
+              <div
+                className="w-14 h-14 shrink-0 rounded-full flex items-center justify-center shadow"
+                style={{ background: "linear-gradient(135deg, #C7A063, #B0813F)" }}
+              >
+                <FaGlassCheers className="text-2xl" style={{ color: "#F6F1E7" }} />
+              </div>
+              <div className="text-left">
+                <p className="font-serif text-2xl font-bold" style={{ color: "#20302A" }}>Fiesta</p>
+                <p className="font-body text-xl" style={{ color: "#5a5a52" }}>A continuación · <strong>19:00 hs</strong></p>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </motion.div>
     </section>

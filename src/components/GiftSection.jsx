@@ -2,60 +2,87 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaGift } from "react-icons/fa";
 
+const ALIAS = "AGUSYLUCASAMIENTO";
+
 const GiftSection = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(ALIAS)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1800);
+      })
+      .catch(() => alert("Alias: " + ALIAS));
+  };
 
   return (
     <section
+      id="regalos"
       className="relative py-10 md:py-16 px-6 md:px-20 text-center flex flex-col items-center gap-4 overflow-hidden"
-      style={{ background: '#FFFEF9' }}
+      style={{ background: '#F6F1E7' }}
     >
-      {/* Flores decorativas */}
       <img
         src="/images/lavender.png"
-        className="absolute right-0 top-1/2 -translate-y-1/2 w-32 md:w-48 opacity-25 pointer-events-none"
-        alt="flores decorativas"
+        className="absolute right-0 top-1/2 -translate-y-1/2 w-32 md:w-48 opacity-20 pointer-events-none"
+        alt=""
       />
       <img
         src="/images/lavender.png"
-        className="absolute left-0 top-1/2 -translate-y-1/2 w-32 md:w-48 opacity-25 pointer-events-none scale-x-[-1]"
-        alt="flores decorativas"
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-32 md:w-48 opacity-20 pointer-events-none scale-x-[-1]"
+        alt=""
       />
 
-      {/* Icono */}
       <div
         className="w-16 h-16 rounded-full flex items-center justify-center shadow-md z-10"
-        style={{ background: 'linear-gradient(135deg, #FDE68A, #D4AF37)' }}
+        style={{ background: 'linear-gradient(135deg, #C7A063, #B0813F)' }}
       >
-        <FaGift className="text-2xl text-amber-900" />
+        <FaGift className="text-2xl" style={{ color: "#F6F1E7" }} />
       </div>
 
-      {/* Título en fuente script */}
-      <h2
-        className="font-script z-10 drop-shadow"
-        style={{ color: '#7D6212', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)' }}
+      <p
+        className="font-body uppercase z-10"
+        style={{ fontSize: "0.72rem", letterSpacing: "0.42em", color: "#B0813F" }}
       >
-        Nuestro Hogar
-      </h2>
-
-      <div className="w-24 h-px z-10" style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }} />
-
-      {/* Descripción */}
-      <p className="font-body text-lg md:text-xl text-amber-800 max-w-xl tracking-wide z-10 leading-relaxed">
-        Ya tenemos nuestro hogar equipado. Si querés hacernos un regalo, podés hacerlo a:
+        Regalos
       </p>
 
-      {/* Botón */}
-      <motion.button
-        className="btn-gold z-10"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(true)}
+      <h2
+        className="font-script z-10 drop-shadow"
+        style={{ color: '#20302A', fontSize: 'clamp(3rem, 8vw, 4.5rem)' }}
       >
-        Ver datos bancarios
-      </motion.button>
+        Si querés hacernos un regalo
+      </h2>
 
-      {/* Modal */}
+      <div className="w-24 h-px z-10" style={{ background: 'linear-gradient(90deg, transparent, #B0813F, transparent)' }} />
+
+      <p className="font-body text-xl md:text-2xl max-w-xl tracking-wide z-10 leading-relaxed" style={{ color: '#2A2A28' }}>
+        Lo más importante es que nos acompañes. Si además querés colaborar,
+        te dejamos los datos para una transferencia. ¡Gracias de corazón!
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-3 z-10">
+        <motion.button
+          className="btn-gold"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleCopy}
+        >
+          {copied ? "¡Alias copiado! ✓" : "Copiar Alias"}
+        </motion.button>
+
+        <motion.button
+          className="btn-ghost-gold"
+          style={{ color: "#20302A", border: "1.5px solid rgba(176,129,63,0.5)", background: "rgba(176,129,63,0.08)" }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(true)}
+        >
+          Ver datos bancarios
+        </motion.button>
+      </div>
+
       {isOpen && (
         <motion.div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4"
@@ -67,8 +94,8 @@ const GiftSection = () => {
           <motion.div
             className="rounded-3xl shadow-2xl p-8 max-w-md w-full relative"
             style={{
-              background: "linear-gradient(135deg, #FFFEF9 0%, #FEF9D9 50%, #FDE68A 100%)",
-              border: "1px solid rgba(212,175,55,0.45)",
+              background: "linear-gradient(135deg, #F6F1E7 0%, #EFE7D7 60%, #F6F1E7 100%)",
+              border: "1px solid rgba(176,129,63,0.4)",
             }}
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -76,29 +103,26 @@ const GiftSection = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-4 right-4 text-amber-700 hover:text-amber-900 text-xl font-bold transition-colors"
+              className="absolute top-4 right-4 text-xl font-bold transition-opacity hover:opacity-60"
+              style={{ color: "#B0813F" }}
               onClick={() => setIsOpen(false)}
             >
               ✕
             </button>
 
-            <h3 className="font-serif text-2xl font-bold text-amber-900 text-center mb-2">Datos Bancarios</h3>
-            <div className="w-16 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }} />
+            <h3 className="font-serif text-3xl font-bold text-center mb-2" style={{ color: "#20302A" }}>Datos Bancarios</h3>
+            <div className="w-16 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #B0813F, transparent)' }} />
 
-            <div className="mb-6 text-left">
-              <h4 className="font-serif font-semibold text-amber-800 mb-2 text-lg">Caja de ahorro en Pesos</h4>
-              <p className="font-body text-amber-700">Número de cuenta:</p>
-              <p className="font-body text-amber-700">CBU:</p>
-              <p className="font-body text-amber-700">Alias:</p>
-            </div>
-
-            <div className="w-full h-px mb-6" style={{ background: 'rgba(212,175,55,0.4)' }} />
-
-            <div className="text-left">
-              <h4 className="font-serif font-semibold text-amber-800 mb-2 text-lg">Caja de ahorro en Dólares</h4>
-              <p className="font-body text-amber-700">Número de cuenta:</p>
-              <p className="font-body text-amber-700">CBU:</p>
-              <p className="font-body text-amber-700">Alias:</p>
+            <div className="text-left space-y-5">
+              <div>
+                <p className="font-body text-sm uppercase tracking-widest mb-1" style={{ color: "#B0813F" }}>CBU</p>
+                <p className="font-body text-xl font-semibold tracking-wider" style={{ color: "#20302A" }}>0140068701501505871962</p>
+              </div>
+              <div className="w-full h-px" style={{ background: "rgba(176,129,63,0.3)" }} />
+              <div>
+                <p className="font-body text-sm uppercase tracking-widest mb-1" style={{ color: "#B0813F" }}>Alias</p>
+                <p className="font-body text-xl font-semibold tracking-wider" style={{ color: "#20302A" }}>AGUSYLUCASAMIENTO</p>
+              </div>
             </div>
           </motion.div>
         </motion.div>
