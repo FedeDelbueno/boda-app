@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Countdown from "./Countdown";
 import DownArrow from "./DownArrow";
 import FloatingPetals from "./FloatingPetals";
+import AnimatedPineBackground from "./AnimatedPineBackground";
 
 const Hero = () => {
   const weddingDate = new Date("2026-11-21T18:00:00");
@@ -16,16 +17,7 @@ const Hero = () => {
     <section className="relative min-h-screen flex flex-col justify-center items-center overflow-hidden px-6 pt-24 pb-20">
 
       {/* Fondo pino oscuro animado */}
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(120deg, #172420, #172420, #20302A, #2c4438, #20302A, #172420, #172420)",
-          backgroundSize: "400% 400%",
-        }}
-        animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
-      />
+      <AnimatedPineBackground />
 
       <FloatingPetals />
 

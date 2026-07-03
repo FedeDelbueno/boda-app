@@ -109,6 +109,15 @@
     animation: card-ambient 4s ease-in-out infinite;
   }
 
+  /* ---- Variante de .card-gold para fondos oscuros (login) ---- */
+  .card-gold-dark {
+    @apply rounded-2xl;
+    background: rgba(246, 241, 231, 0.06);
+    border: 1px solid rgba(199, 160, 99, 0.35);
+    backdrop-filter: blur(12px);
+    animation: card-ambient 4s ease-in-out infinite;
+  }
+
   /* ---- Shimmer en texto ---- */
   .shimmer-text {
     background: linear-gradient(

@@ -1,0 +1,103 @@
+import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "../auth/authService";
+import { API_BASE_URL } from "../config";
+import StatCard from "./StatCard";
+
+export default function SongsPanel() {
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await authFetch(`${API_BASE_URL}/api/songs`);
+        if (!res.ok) throw new Error("request_failed");
+        const data = await res.json();
+        if (!cancelled) setSongs(data);
+      } catch {
+        if (!cancelled) setError("No se pudieron cargar las canciones.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return songs;
+    return songs.filter(
+      (s) => s.tema_interprete.toLowerCase().includes(q) || s.nombre.toLowerCase().includes(q)
+    );
+  }, [songs, search]);
+
+  if (loading) {
+    return <p className="font-body font-semibold text-xl" style={{ color: "#F6F1E7" }}>Cargando canciones…</p>;
+  }
+
+  if (error) {
+    return <p className="font-body font-semibold text-xl" style={{ color: "#e08a7d" }}>{error}</p>;
+  }
+
+  return (
+    <div>
+      <div className="flex flex-wrap gap-4 mb-8">
+        <StatCard value={songs.length} label="Canciones sugeridas" accent="#B0813F" />
+      </div>
+
+      <input
+        type="text"
+        placeholder="Buscar por tema, intérprete o quién la pidió…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="font-body font-medium mb-5"
+        style={{
+          padding: "12px 18px",
+          borderRadius: 12,
+          border: "1.5px solid rgba(199,160,99,0.4)",
+          background: "rgba(246,241,231,0.08)",
+          fontSize: 18,
+          color: "#F6F1E7",
+          minWidth: 340,
+        }}
+      />
+
+      <div className="card-gold overflow-x-auto">
+        <table className="w-full font-body text-left" style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderBottom: "2px solid rgba(176,129,63,0.35)" }}>
+              {["Tema / intérprete", "Sugerida por", "Fecha"].map((h) => (
+                <th key={h} className="px-4 py-4 text-base font-bold uppercase" style={{ color: "#6b4423", letterSpacing: "0.06em" }}>
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((s) => (
+              <tr key={s.id} style={{ borderBottom: "1px solid rgba(176,129,63,0.15)" }}>
+                <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#20302A" }}>{s.tema_interprete}</td>
+                <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{s.nombre}</td>
+                <td className="px-4 py-4 text-base font-medium" style={{ color: "#6b6b62" }}>
+                  {new Date(s.created_at).toLocaleString("es-AR")}
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={3} className="px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
+                  No hay canciones que coincidan.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

@@ -1,12 +1,74 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaHeart, FaChevronDown } from "react-icons/fa";
+import { API_BASE_URL } from "../config";
 
-const RSVP_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLScmPzheLlAbxh9m6CUp-oqzpcTSWjQZCTRZ_M51sCM_xacFEw/viewform?usp=publish-editor";
+const RESTRICCIONES = [
+  { value: "sin_restricciones", label: "Sin restricciones" },
+  { value: "vegetariano", label: "Vegetariano/a" },
+  { value: "vegano", label: "Vegano/a" },
+  { value: "celiaco", label: "Celíaco/a (sin gluten)" },
+  { value: "lactosa", label: "Intolerante a la lactosa" },
+  { value: "diabetico", label: "Diabético/a" },
+  { value: "otros", label: "Otros (especificar)" },
+];
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px 14px",
+  borderRadius: 12,
+  border: "1.5px solid rgba(176,129,63,0.35)",
+  background: "#fff",
+  fontFamily: "'Cormorant Garamond', serif",
+  fontSize: 17,
+  color: "#20302A",
+};
 
 const RSVPSection = () => {
   const [formOpen, setFormOpen] = useState(false);
+  const [nombreApellido, setNombreApellido] = useState("");
+  const [asistencia, setAsistencia] = useState("");
+  const [restriccion, setRestriccion] = useState("");
+  const [restriccionOtro, setRestriccionOtro] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!nombreApellido.trim() || !asistencia) {
+      setError("Completá tu nombre y confirmá si venís o no.");
+      return;
+    }
+    if (asistencia === "si" && !restriccion) {
+      setError("Contanos si tenés alguna restricción alimenticia (o elegí \"Sin restricciones\").");
+      return;
+    }
+    if (restriccion === "otros" && !restriccionOtro.trim()) {
+      setError("Contanos cuál es tu restricción alimenticia.");
+      return;
+    }
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/rsvp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre_apellido: nombreApellido.trim(),
+          asistencia,
+          restriccion: restriccion || null,
+          restriccion_otro: restriccion === "otros" ? restriccionOtro.trim() : null,
+        }),
+      });
+      if (!res.ok) throw new Error("request_failed");
+      setSubmitted(true);
+    } catch (err) {
+      setError("No se pudo enviar. Revisá tu conexión y probá de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <motion.section
@@ -126,34 +188,112 @@ const RSVPSection = () => {
               className="w-full overflow-hidden flex flex-col items-center gap-3"
             >
               <div
-                className="w-full rounded-2xl overflow-hidden"
+                className="w-full rounded-2xl overflow-hidden text-left"
                 style={{
                   background: "#FFFFFF",
                   border: "1.5px solid rgba(176,129,63,0.35)",
                   boxShadow: "0 10px 40px rgba(32,48,42,0.15)",
+                  padding: "28px 24px",
                 }}
               >
-                <iframe
-                  src={`${RSVP_URL.split("?")[0]}?embedded=true`}
-                  title="Confirmación de asistencia"
-                  width="100%"
-                  height="900"
-                  frameBorder="0"
-                  style={{ display: "block" }}
-                >
-                  Cargando…
-                </iframe>
-              </div>
+                {submitted ? (
+                  <div className="text-center py-6">
+                    <p className="text-4xl mb-2">💛</p>
+                    <p className="font-body text-lg" style={{ color: "#20302A" }}>
+                      ¡Gracias por confirmar! Ya quedó registrado.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <div>
+                      <label className="font-body text-sm block mb-1" style={{ color: "#8B6530" }}>
+                        Nombre y apellido
+                      </label>
+                      <input
+                        type="text"
+                        style={inputStyle}
+                        value={nombreApellido}
+                        onChange={(e) => setNombreApellido(e.target.value)}
+                        placeholder="Tu nombre completo"
+                      />
+                    </div>
 
-              <a
-                href={RSVP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-body text-sm underline"
-                style={{ color: "#8B6530" }}
-              >
-                ¿No se ve el formulario? Abrilo en una pestaña nueva
-              </a>
+                    <div>
+                      <label className="font-body text-sm block mb-1" style={{ color: "#8B6530" }}>
+                        Asistencia
+                      </label>
+                      <div className="flex gap-3">
+                        {[
+                          { value: "si", label: "Sí, confirmo" },
+                          { value: "no", label: "No podré asistir" },
+                        ].map((opt) => (
+                          <button
+                            type="button"
+                            key={opt.value}
+                            onClick={() => setAsistencia(opt.value)}
+                            className="font-body text-sm px-4 py-2 rounded-full flex-1"
+                            style={{
+                              border: "1.5px solid rgba(176,129,63,0.5)",
+                              background: asistencia === opt.value ? "#B0813F" : "transparent",
+                              color: asistencia === opt.value ? "#F6F1E7" : "#20302A",
+                            }}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {asistencia === "si" && (
+                      <div>
+                        <label className="font-body text-sm block mb-1" style={{ color: "#8B6530" }}>
+                          Restricciones alimenticias *
+                        </label>
+                        <select
+                          style={inputStyle}
+                          value={restriccion}
+                          onChange={(e) => setRestriccion(e.target.value)}
+                        >
+                          <option value="">Elegí una opción</option>
+                          {RESTRICCIONES.map((r) => (
+                            <option key={r.value} value={r.value}>
+                              {r.label}
+                            </option>
+                          ))}
+                        </select>
+                        {restriccion === "otros" && (
+                          <input
+                            type="text"
+                            style={{ ...inputStyle, marginTop: 10 }}
+                            value={restriccionOtro}
+                            onChange={(e) => setRestriccionOtro(e.target.value)}
+                            placeholder="Contanos cuál"
+                          />
+                        )}
+                      </div>
+                    )}
+
+                    {error && (
+                      <p className="font-body text-sm" style={{ color: "#a13b2e" }}>
+                        {error}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="font-body font-semibold text-lg py-3 rounded-full"
+                      style={{
+                        background: "linear-gradient(135deg, #C7A063, #B0813F)",
+                        color: "#F6F1E7",
+                        opacity: submitting ? 0.7 : 1,
+                      }}
+                    >
+                      {submitting ? "Enviando…" : "Confirmar"}
+                    </button>
+                  </form>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

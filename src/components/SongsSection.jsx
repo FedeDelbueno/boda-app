@@ -1,12 +1,53 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMusic, FaChevronDown } from "react-icons/fa";
+import { API_BASE_URL } from "../config";
 
-const SONGS_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdoJYCbdAeQ9-CNzkUGpYQD4wFmG48dSfGPkYk6OSIdtilvfw/viewform?usp=publish-editor";
+const inputStyle = {
+  width: "100%",
+  padding: "12px 14px",
+  borderRadius: 12,
+  border: "1.5px solid rgba(176,129,63,0.35)",
+  background: "#fff",
+  fontFamily: "'Cormorant Garamond', serif",
+  fontSize: 17,
+  color: "#20302A",
+};
 
 const SongsSection = () => {
   const [formOpen, setFormOpen] = useState(false);
+  const [temaInterprete, setTemaInterprete] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!temaInterprete.trim() || !nombre.trim()) {
+      setError("Completá el tema/intérprete y tu nombre.");
+      return;
+    }
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/songs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tema_interprete: temaInterprete.trim(),
+          nombre: nombre.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error("request_failed");
+      setSubmitted(true);
+      setTemaInterprete("");
+    } catch (err) {
+      setError("No se pudo enviar. Revisá tu conexión y probá de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <motion.section
@@ -79,34 +120,78 @@ const SongsSection = () => {
               className="w-full overflow-hidden flex flex-col items-center gap-3"
             >
               <div
-                className="w-full rounded-2xl overflow-hidden"
+                className="w-full rounded-2xl overflow-hidden text-left"
                 style={{
                   background: "#FFFFFF",
                   border: "1.5px solid rgba(176,129,63,0.35)",
                   boxShadow: "0 10px 40px rgba(32,48,42,0.12)",
+                  padding: "28px 24px",
                 }}
               >
-                <iframe
-                  src={`${SONGS_URL.split("?")[0]}?embedded=true`}
-                  title="Sugerencias de canciones"
-                  width="100%"
-                  height="650"
-                  frameBorder="0"
-                  style={{ display: "block" }}
-                >
-                  Cargando…
-                </iframe>
-              </div>
+                {submitted ? (
+                  <div className="text-center py-6">
+                    <p className="text-4xl mb-2">🎶</p>
+                    <p className="font-body text-lg" style={{ color: "#20302A" }}>
+                      ¡Gracias! La sumamos a la playlist.
+                    </p>
+                    <button
+                      type="button"
+                      className="font-body text-sm underline mt-3"
+                      style={{ color: "#8B6530" }}
+                      onClick={() => setSubmitted(false)}
+                    >
+                      Sugerir otra canción
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <div>
+                      <label className="font-body text-sm block mb-1" style={{ color: "#8B6530" }}>
+                        Tema / intérprete
+                      </label>
+                      <input
+                        type="text"
+                        style={inputStyle}
+                        value={temaInterprete}
+                        onChange={(e) => setTemaInterprete(e.target.value)}
+                        placeholder="Ej: Bad Bunny - Titi Me Preguntó"
+                      />
+                    </div>
 
-              <a
-                href={SONGS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-body text-sm underline"
-                style={{ color: "#8B6530" }}
-              >
-                ¿No se ve el formulario? Abrilo en una pestaña nueva
-              </a>
+                    <div>
+                      <label className="font-body text-sm block mb-1" style={{ color: "#8B6530" }}>
+                        Tu nombre
+                      </label>
+                      <input
+                        type="text"
+                        style={inputStyle}
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        placeholder="¿Quién la sugiere?"
+                      />
+                    </div>
+
+                    {error && (
+                      <p className="font-body text-sm" style={{ color: "#a13b2e" }}>
+                        {error}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="font-body font-semibold text-lg py-3 rounded-full"
+                      style={{
+                        background: "linear-gradient(135deg, #C7A063, #B0813F)",
+                        color: "#F6F1E7",
+                        opacity: submitting ? 0.7 : 1,
+                      }}
+                    >
+                      {submitting ? "Enviando…" : "Agregar a la playlist"}
+                    </button>
+                  </form>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

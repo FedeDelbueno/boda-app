@@ -461,9 +461,9 @@
 </div>
 
 <script>
-  // ── Configuración: completá estos dos valores después de desplegar el Apps Script ──
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwZKiOu7Y9IhTX1ezrBApOjmbC-iA51RialIimzSQx2wmV4s6Olq2DP2BEfVeU-LV96-A/exec';
-  var SHARED_KEY = 'B0dA-LuC!A_AgU$T1N#2026!x7Qm'; // debe coincidir con SHARED_KEY en Code.gs
+  // ── Configuración: URL de tu API de Laravel en Oracle Cloud ──
+  var API_BASE_URL = 'https://api.tudominio.com'; // reemplazar cuando tengas el dominio/IP de Oracle
+  var CHUNK_SIZE = 5 * 1024 * 1024; // 5MB por pedazo
   // ────────────────────────────────────────────────────────────────────────────────
 
   // ── Partículas flotantes de fondo ──
@@ -524,6 +524,7 @@
 
   function selectFile(file) {
     selectedFile = file || null;
+    resumeState = null;
     if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
     if (!selectedFile) {
       previewWrap.classList.remove('visible');
@@ -596,43 +597,80 @@
       .replace(/\s+/g, '_') || 'invitado';
   }
 
-  function getUploadTarget(fileName, mimeType) {
-    return fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ key: SHARED_KEY, fileName: fileName, mimeType: mimeType }),
-    }).then(function (res) { return res.json(); });
+  function makeUploadId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'up_' + Date.now() + '_' + Math.random().toString(36).slice(2);
   }
 
-  function putWithProgress(url, token, file, onProgress) {
-    return new Promise(function (resolve, reject) {
-      var xhr = new XMLHttpRequest();
-      var bodySent = false;
-      xhr.open('PUT', url, true);
-      xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
-      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-      xhr.upload.onprogress = function (e) {
-        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+  function sendChunk(uploadId, chunkIndex, totalChunks, blob, meta, attempt) {
+    attempt = attempt || 1;
+    var form = new FormData();
+    form.append('upload_id', uploadId);
+    form.append('chunk_index', chunkIndex);
+    form.append('total_chunks', totalChunks);
+    form.append('original_filename', meta.originalFilename);
+    form.append('mime_type', meta.mimeType);
+    form.append('guest_name', meta.guestName);
+    form.append('chunk', blob);
+
+    return fetch(API_BASE_URL + '/api/media/chunk', { method: 'POST', body: form })
+      .then(function (res) {
+        if (!res.ok) throw new Error('chunk_failed');
+        return res.json();
+      })
+      .catch(function (err) {
+        // Reintenta el mismo pedazo hasta 3 veces antes de rendirse —
+        // esto es lo que hace que un video largo aguante un wifi con cortes.
+        if (attempt < 3) {
+          return sendChunk(uploadId, chunkIndex, totalChunks, blob, meta, attempt + 1);
+        }
+        throw err;
+      });
+  }
+
+  // Guarda en qué pedazo se quedó la subida actual, para que si el usuario
+  // toca "Subir ahora" de nuevo después de un corte, arranque desde ahí y no
+  // desde cero.
+  var resumeState = null;
+
+  function uploadInChunks(file, guestName, onProgress) {
+    if (!resumeState || resumeState.file !== file) {
+      resumeState = {
+        file: file,
+        uploadId: makeUploadId(),
+        nextChunk: 0,
       };
-      xhr.upload.onload = function () {
-        // El navegador ya mandó todos los bytes del archivo. A partir de acá
-        // Google ya tiene el archivo completo, aunque la respuesta final a
-        // veces se bloquea por CORS antes de llegar al JS.
-        bodySent = true;
-        onProgress(100);
-      };
-      xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) resolve();
-        else reject(new Error('La subida se interrumpió (código ' + xhr.status + '). Probá de nuevo.'));
-      };
-      xhr.onerror = function () {
-        // Google a veces bloquea por CORS la respuesta final del PUT aunque
-        // el archivo ya se haya guardado bien. Si ya se mandaron todos los
-        // bytes, lo tratamos como subida exitosa.
-        if (bodySent) resolve();
-        else reject(new Error('Se perdió la conexión. Probá de nuevo.'));
-      };
-      xhr.send(file);
+    }
+
+    var totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
+    var meta = {
+      originalFilename: file.name,
+      mimeType: file.type || 'application/octet-stream',
+      guestName: guestName || '',
+    };
+
+    var sentBytes = Math.min(resumeState.nextChunk * CHUNK_SIZE, file.size);
+    onProgress(Math.round((sentBytes / file.size) * 100));
+
+    var chain = Promise.resolve();
+
+    var _loop = function (index) {
+      var start = index * CHUNK_SIZE;
+      var end = Math.min(start + CHUNK_SIZE, file.size);
+      var blob = file.slice(start, end);
+      chain = chain.then(function () {
+        return sendChunk(resumeState.uploadId, index, totalChunks, blob, meta).then(function () {
+          resumeState.nextChunk = index + 1;
+          sentBytes = Math.min(resumeState.nextChunk * CHUNK_SIZE, file.size);
+          onProgress(Math.round((sentBytes / file.size) * 100));
+        });
+      });
+    };
+
+    for (var i = resumeState.nextChunk; i < totalChunks; i++) _loop(i);
+
+    return chain.then(function () {
+      resumeState = null;
     });
   }
 
@@ -654,20 +692,9 @@
     setProgress(0);
     setStatus(uploadingVideo ? 'Preparando la subida de tu video…' : 'Preparando la subida de tu foto…');
 
-    var stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    var safeName = sanitizeName(guestNameInput.value);
-    var fileName = safeName + '_' + stamp + '_' + selectedFile.name;
-
-    getUploadTarget(fileName, selectedFile.type)
-      .then(function (data) {
-        if (data.error || !data.uploadUrl) {
-          throw new Error('No se pudo iniciar la subida. Avisá a los novios.');
-        }
-        setStatus('Subiendo…');
-        return putWithProgress(data.uploadUrl, data.token, selectedFile, function (pct) {
-          setProgress(pct);
-          setStatus('Subiendo…');
-        });
+    uploadInChunks(selectedFile, sanitizeName(guestNameInput.value), function (pct) {
+        setProgress(pct);
+        setStatus('Subiendo… ' + pct + '%');
       })
       .then(function () {
         successIcon.textContent = uploadingVideo ? '🎥' : '💛';
@@ -677,8 +704,8 @@
         formView.classList.add('hidden');
         successView.classList.remove('hidden');
       })
-      .catch(function (err) {
-        setStatus(err.message || 'Algo falló. Probá de nuevo.', 'error');
+      .catch(function () {
+        setStatus('Se cortó la subida. Tocá "Subir ahora" de nuevo para continuar donde quedó.', 'error');
         uploadBtn.disabled = false;
         dropZone.style.pointerEvents = 'auto';
         dropZone.style.opacity = '1';
