@@ -1,8 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { isMobile } from "react-device-detect";
 import { authFetch } from "../auth/authService";
 import { API_BASE_URL } from "../config";
 import { downloadCsv } from "../utils/csv";
 import StatCard from "./StatCard";
+import FechaHora from "./FechaHora";
+
+const AsistenciaBadge = ({ value }) => (
+  <span
+    className="px-3 py-1.5 rounded-full text-base font-bold"
+    style={{
+      background: value === "si" ? "rgba(139,101,48,0.15)" : "rgba(161,59,46,0.12)",
+      color: value === "si" ? "#8B6530" : "#a13b2e",
+    }}
+  >
+    {value === "si" ? "Sí" : "No"}
+  </span>
+);
 
 const RESTRICCION_LABELS = {
   sin_restricciones: "Sin restricciones",
@@ -84,7 +99,7 @@ export default function RsvpPanel() {
           placeholder="Buscar por nombre…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="font-body font-medium"
+          className="font-body font-medium input-gold w-full sm:w-auto sm:min-w-[260px]"
           style={{
             padding: "12px 18px",
             borderRadius: 12,
@@ -92,57 +107,99 @@ export default function RsvpPanel() {
             background: "rgba(246,241,231,0.08)",
             fontSize: 18,
             color: "#F6F1E7",
-            minWidth: 260,
           }}
         />
-        <button onClick={handleExport} className="btn-gold" style={{ padding: "12px 26px", fontSize: 16, minHeight: "auto" }}>
+        <motion.button
+          onClick={handleExport}
+          className="btn-gold"
+          style={{ padding: "12px 26px", fontSize: 16, minHeight: "auto" }}
+          whileHover={{ y: -2, scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
+        >
           Exportar CSV
-        </button>
+        </motion.button>
       </div>
 
-      <div className="card-gold overflow-x-auto">
-        <table className="w-full font-body text-left" style={{ borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "2px solid rgba(176,129,63,0.35)" }}>
-              {["Nombre", "Asistencia", "Restricción", "Detalle", "Fecha"].map((h) => (
-                <th key={h} className="px-4 py-4 text-base font-bold uppercase" style={{ color: "#6b4423", letterSpacing: "0.06em" }}>
-                  {h}
-                </th>
+      {isMobile ? (
+        <div className="flex flex-col gap-4">
+          {filtered.map((r, i) => (
+            <motion.div
+              key={r.id}
+              className="card-gold p-5 flex flex-col gap-3"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.4), ease: "easeOut" }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</span>
+                <AsistenciaBadge value={r.asistencia} />
+              </div>
+              <div className="flex flex-col gap-1.5" style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
+                <div className="flex justify-between gap-3">
+                  <span className="font-body font-bold text-sm uppercase" style={{ color: "#8B6530", letterSpacing: "0.06em" }}>Restricción</span>
+                  <span className="font-body font-semibold text-base text-right" style={{ color: "#3a3a35" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</span>
+                </div>
+                {r.restriccion_otro && (
+                  <div className="flex justify-between gap-3">
+                    <span className="font-body font-bold text-sm uppercase" style={{ color: "#8B6530", letterSpacing: "0.06em" }}>Detalle</span>
+                    <span className="font-body font-semibold text-base text-right" style={{ color: "#3a3a35" }}>{r.restriccion_otro}</span>
+                  </div>
+                )}
+              </div>
+              <div style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
+                <FechaHora value={r.created_at} />
+              </div>
+            </motion.div>
+          ))}
+          {filtered.length === 0 && (
+            <p className="card-gold px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
+              No hay respuestas que coincidan.
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="card-gold overflow-x-auto">
+          <table className="w-full font-body text-left" style={{ borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid rgba(176,129,63,0.35)" }}>
+                {["Nombre", "Asistencia", "Restricción", "Detalle", "Fecha"].map((h) => (
+                  <th key={h} className="px-4 py-4 text-base font-bold uppercase" style={{ color: "#6b4423", letterSpacing: "0.06em" }}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((r) => (
+                <motion.tr
+                  key={r.id}
+                  style={{ borderBottom: "1px solid rgba(176,129,63,0.15)" }}
+                  whileHover={{ backgroundColor: "rgba(176,129,63,0.07)" }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#20302A" }}>{r.nombre_apellido}</td>
+                  <td className="px-4 py-4">
+                    <AsistenciaBadge value={r.asistencia} />
+                  </td>
+                  <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</td>
+                  <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{r.restriccion_otro || "—"}</td>
+                  <td className="px-4 py-4">
+                    <FechaHora value={r.created_at} />
+                  </td>
+                </motion.tr>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((r) => (
-              <tr key={r.id} style={{ borderBottom: "1px solid rgba(176,129,63,0.15)" }}>
-                <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#20302A" }}>{r.nombre_apellido}</td>
-                <td className="px-4 py-4">
-                  <span
-                    className="px-3 py-1.5 rounded-full text-base font-bold"
-                    style={{
-                      background: r.asistencia === "si" ? "rgba(139,101,48,0.15)" : "rgba(161,59,46,0.12)",
-                      color: r.asistencia === "si" ? "#8B6530" : "#a13b2e",
-                    }}
-                  >
-                    {r.asistencia === "si" ? "Sí" : "No"}
-                  </span>
-                </td>
-                <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</td>
-                <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{r.restriccion_otro || "—"}</td>
-                <td className="px-4 py-4 text-base font-medium" style={{ color: "#6b6b62" }}>
-                  {new Date(r.created_at).toLocaleString("es-AR")}
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
-                  No hay respuestas que coincidan.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
+                    No hay respuestas que coincidan.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

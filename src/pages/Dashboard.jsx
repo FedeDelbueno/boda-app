@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../auth/AuthContext";
 import AnimatedPineBackground from "../components/AnimatedPineBackground";
+import FloatingPetals from "../components/FloatingPetals";
+import ClickSparkle from "../components/ClickSparkle";
 import DashboardNav from "../dashboard/DashboardNav";
 import RsvpPanel from "../dashboard/RsvpPanel";
 import SongsPanel from "../dashboard/SongsPanel";
@@ -19,7 +21,27 @@ export default function Dashboard() {
 
   return (
     <div className="relative min-h-screen">
-      <AnimatedPineBackground className="fixed inset-0 -z-10" />
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <AnimatedPineBackground className="absolute inset-0" />
+        <FloatingPetals />
+
+        <motion.img
+          src="/images/lavender_dorado.png"
+          className="absolute top-0 left-0 w-40 md:w-64 scale-x-[-1]"
+          style={{ opacity: 0.42, filter: "brightness(1.4)", transformOrigin: "top center" }}
+          animate={{ rotate: [-3, 2, -3], y: [0, -8, 0] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+          alt=""
+        />
+        <motion.img
+          src="/images/lavender_dorado.png"
+          className="absolute bottom-0 right-0 w-40 md:w-64"
+          style={{ opacity: 0.42, filter: "brightness(1.4)", transformOrigin: "bottom center" }}
+          animate={{ rotate: [2, -3, 2], y: [0, 8, 0] }}
+          transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+          alt=""
+        />
+      </div>
 
       <motion.div
         className="fixed rounded-full pointer-events-none -z-10"
@@ -35,6 +57,8 @@ export default function Dashboard() {
         animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.9, 0.5] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       />
+
+      <ClickSparkle />
 
       <header
         className="flex flex-wrap items-center justify-between gap-4 px-6 md:px-12 py-7"

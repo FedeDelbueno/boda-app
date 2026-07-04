@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { FaDownload, FaImage, FaVideo } from "react-icons/fa";
 import { authFetch } from "../auth/authService";
 import { API_BASE_URL } from "../config";
 import StatCard from "./StatCard";
+import TiltCard from "../components/TiltCard";
 
 const FILTERS = [
   { key: "todos", label: "Todos" },
@@ -92,9 +94,9 @@ export default function DrivePanel() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
           {FILTERS.map((f) => (
-            <button
+            <motion.button
               key={f.key}
               onClick={() => setFilter(f.key)}
               className="font-body text-base px-5 py-2.5 rounded-full"
@@ -103,23 +105,28 @@ export default function DrivePanel() {
                 background: filter === f.key ? "linear-gradient(135deg, #C7A063, #B0813F)" : "rgba(246,241,231,0.06)",
                 color: filter === f.key ? "#20302A" : "#F6F1E7",
                 fontWeight: 700,
+                flexShrink: 0,
               }}
+              whileHover={{ y: -2, scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
             >
               {f.label}
-            </button>
+            </motion.button>
           ))}
         </div>
 
         <div className="flex flex-col items-end gap-1">
-          <button
+          <motion.button
             onClick={handleDownloadAll}
             disabled={zipping || media.length === 0}
             className="btn-gold flex items-center gap-2"
             style={{ padding: "12px 26px", fontSize: 16, minHeight: "auto", opacity: zipping || media.length === 0 ? 0.6 : 1 }}
+            whileHover={zipping || media.length === 0 ? {} : { y: -2, scale: 1.03 }}
+            whileTap={zipping || media.length === 0 ? {} : { scale: 0.96 }}
           >
             <FaDownload />
             {zipping ? "Generando zip…" : "Descargar todo (.zip)"}
-          </button>
+          </motion.button>
           {zipError && (
             <span className="font-body font-semibold text-base" style={{ color: "#e08a7d" }}>{zipError}</span>
           )}
@@ -131,38 +138,47 @@ export default function DrivePanel() {
           Todavía no hay archivos en esta categoría.
         </p>
       ) : (
-        <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
-          {filtered.map((m) => (
-            <div key={m.id} className="card-gold overflow-hidden flex flex-col">
-              <div style={{ aspectRatio: "4 / 3", background: "#20302A", overflow: "hidden" }} className="flex items-center justify-center">
-                {isImage(m) ? (
-                  <img src={m.url} alt={m.original_filename} className="w-full h-full object-cover" loading="lazy" />
-                ) : isVideo(m) ? (
-                  <video src={m.url} controls preload="metadata" className="w-full h-full object-cover" />
-                ) : (
-                  <FaImage className="text-4xl" style={{ color: "#C7A063" }} />
-                )}
-              </div>
-              <div className="p-3 flex flex-col gap-1.5">
-                <span className="font-body font-semibold text-base truncate" style={{ color: "#20302A" }} title={m.original_filename}>
-                  {m.original_filename}
-                </span>
-                <div className="flex items-center justify-between">
-                  <span className="font-body font-medium text-sm flex items-center gap-1" style={{ color: "#6b4423" }}>
-                    {isVideo(m) ? <FaVideo /> : <FaImage />}
-                    {m.guest_name || "Anónimo"} {m.size_bytes ? `· ${formatSize(m.size_bytes)}` : ""}
-                  </span>
-                  <a
-                    href={m.url}
-                    download
-                    className="font-body text-base flex items-center gap-1"
-                    style={{ color: "#B0813F", fontWeight: 700 }}
-                  >
-                    <FaDownload className="text-sm" /> Bajar
-                  </a>
+        <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(170px, 100%), 1fr))" }}>
+          {filtered.map((m, i) => (
+            <motion.div
+              key={m.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: Math.min(i * 0.03, 0.4), ease: "easeOut" }}
+            >
+              <TiltCard className="card-gold card-gold-interactive overflow-hidden flex flex-col" maxTilt={6}>
+                <div style={{ aspectRatio: "4 / 3", background: "#20302A", overflow: "hidden" }} className="flex items-center justify-center">
+                  {isImage(m) ? (
+                    <img src={m.url} alt={m.original_filename} className="w-full h-full object-cover" loading="lazy" />
+                  ) : isVideo(m) ? (
+                    <video src={m.url} controls preload="metadata" className="w-full h-full object-cover" />
+                  ) : (
+                    <FaImage className="text-4xl" style={{ color: "#C7A063" }} />
+                  )}
                 </div>
-              </div>
-            </div>
+                <div className="p-3 flex flex-col gap-1.5">
+                  <span className="font-body font-semibold text-base truncate" style={{ color: "#20302A" }} title={m.original_filename}>
+                    {m.original_filename}
+                  </span>
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="font-body font-medium text-sm flex items-center gap-1" style={{ color: "#6b4423" }}>
+                      {isVideo(m) ? <FaVideo /> : <FaImage />}
+                      {m.guest_name || "Anónimo"} {m.size_bytes ? `· ${formatSize(m.size_bytes)}` : ""}
+                    </span>
+                    <motion.a
+                      href={m.url}
+                      download
+                      className="font-body text-base flex items-center gap-1"
+                      style={{ color: "#B0813F", fontWeight: 700 }}
+                      whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaDownload className="text-sm" /> Bajar
+                    </motion.a>
+                  </div>
+                </div>
+              </TiltCard>
+            </motion.div>
           ))}
         </div>
       )}
