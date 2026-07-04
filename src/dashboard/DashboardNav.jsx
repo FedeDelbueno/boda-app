@@ -27,7 +27,7 @@ export default function DashboardNav() {
   return (
     <nav
       className="flex gap-3 mb-9 overflow-x-auto no-scrollbar"
-      style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
+      style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", padding: "10px 4px 14px" }}
     >
       {TABS.map((tab, i) => (
         <motion.div

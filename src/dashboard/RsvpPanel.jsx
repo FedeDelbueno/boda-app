@@ -4,7 +4,7 @@ import { isMobile } from "react-device-detect";
 import { FaTrash } from "react-icons/fa";
 import { authFetch } from "../auth/authService";
 import { API_BASE_URL } from "../config";
-import { downloadCsv } from "../utils/csv";
+import { downloadExcel } from "../utils/excel";
 import { confirmDelete, notifyError } from "../utils/swal";
 import StatCard from "./StatCard";
 import FechaHora from "./FechaHora";
@@ -31,11 +31,52 @@ const RESTRICCION_LABELS = {
   otros: "Otros",
 };
 
+const RestriccionBadge = ({ value }) => {
+  const neutral = !value || value === "sin_restricciones";
+  return (
+    <span
+      className="px-3 py-1 rounded-full text-sm font-bold inline-block"
+      style={{
+        background: neutral ? "rgba(58,58,53,0.07)" : "rgba(176,129,63,0.16)",
+        color: neutral ? "#6b6b62" : "#8B6530",
+      }}
+    >
+      {RESTRICCION_LABELS[value] || value || "—"}
+    </span>
+  );
+};
+
+const getInitials = (name = "") =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase())
+    .join("");
+
+const Avatar = ({ name }) => (
+  <span
+    className="flex items-center justify-center font-serif font-bold shrink-0"
+    style={{
+      width: 40,
+      height: 40,
+      fontSize: 15,
+      borderRadius: "50%",
+      background: "linear-gradient(135deg, #D9B675, #8B6530)",
+      color: "#20302A",
+      boxShadow: "0 2px 8px rgba(139,101,48,0.4)",
+    }}
+  >
+    {getInitials(name)}
+  </span>
+);
+
 export default function RsvpPanel() {
   const [rsvps, setRsvps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [hoveredId, setHoveredId] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,8 +122,8 @@ export default function RsvpPanel() {
   };
 
   const handleExport = () => {
-    downloadCsv(
-      "confirmaciones-boda.csv",
+    downloadExcel(
+      "confirmaciones-boda.xlsx",
       rsvps,
       [
         { label: "Nombre y apellido", value: (r) => r.nombre_apellido },
@@ -90,7 +131,8 @@ export default function RsvpPanel() {
         { label: "Restricción", value: (r) => RESTRICCION_LABELS[r.restriccion] || r.restriccion || "" },
         { label: "Detalle", value: (r) => r.restriccion_otro || "" },
         { label: "Fecha", value: (r) => new Date(r.created_at).toLocaleString("es-AR") },
-      ]
+      ],
+      "Confirmaciones"
     );
   };
 
@@ -133,7 +175,7 @@ export default function RsvpPanel() {
           whileHover={{ y: -2, scale: 1.03 }}
           whileTap={{ scale: 0.96 }}
         >
-          Exportar CSV
+          Exportar Excel
         </motion.button>
       </div>
 
@@ -147,9 +189,13 @@ export default function RsvpPanel() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: Math.min(i * 0.04, 0.4), ease: "easeOut" }}
               whileTap={{ scale: 0.98 }}
+              style={{ boxShadow: `inset 4px 0 0 0 ${r.asistencia === "si" ? "#8B6530" : "#a13b2e"}` }}
             >
               <div className="flex items-start justify-between gap-3">
-                <span className="font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</span>
+                <div className="flex items-center gap-3">
+                  <Avatar name={r.nombre_apellido} />
+                  <span className="font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</span>
+                </div>
                 <div className="flex items-center gap-2">
                   <AsistenciaBadge value={r.asistencia} />
                   <button
@@ -163,9 +209,9 @@ export default function RsvpPanel() {
                 </div>
               </div>
               <div className="flex flex-col gap-1.5" style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
-                <div className="flex justify-between gap-3">
+                <div className="flex justify-between items-center gap-3">
                   <span className="font-body font-bold text-sm uppercase" style={{ color: "#8B6530", letterSpacing: "0.06em" }}>Restricción</span>
-                  <span className="font-body font-bold text-base text-right" style={{ color: "#2a2a26" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</span>
+                  <RestriccionBadge value={r.restriccion} />
                 </div>
                 {r.restriccion_otro && (
                   <div className="flex justify-between gap-3">
@@ -186,46 +232,80 @@ export default function RsvpPanel() {
           )}
         </div>
       ) : (
-        <div className="card-gold overflow-x-auto">
-          <table className="w-full font-body text-left" style={{ borderCollapse: "collapse" }}>
+        <div className="card-gold overflow-x-auto p-3">
+          <table className="w-full font-body text-left" style={{ borderCollapse: "separate", borderSpacing: "0 10px" }}>
             <thead>
-              <tr style={{ borderBottom: "2px solid rgba(176,129,63,0.35)" }}>
+              <tr>
                 {["Nombre", "Asistencia", "Restricción", "Detalle", "Fecha", ""].map((h) => (
-                  <th key={h} className="px-4 py-4 text-base font-bold uppercase" style={{ color: "#6b4423", letterSpacing: "0.06em" }}>
+                  <th
+                    key={h}
+                    className="px-4 pb-3 text-sm font-bold uppercase"
+                    style={{ color: "#6b4423", letterSpacing: "0.08em", borderBottom: "2px solid rgba(176,129,63,0.35)" }}
+                  >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {filtered.map((r) => (
-                <motion.tr
-                  key={r.id}
-                  style={{ borderBottom: "1px solid rgba(176,129,63,0.15)" }}
-                  whileHover={{ backgroundColor: "rgba(176,129,63,0.07)" }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <td className="px-4 py-4 font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</td>
-                  <td className="px-4 py-4">
-                    <AsistenciaBadge value={r.asistencia} />
-                  </td>
-                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#2a2a26" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</td>
-                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#2a2a26" }}>{r.restriccion_otro || "—"}</td>
-                  <td className="px-4 py-4">
-                    <FechaHora value={r.created_at} />
-                  </td>
-                  <td className="px-4 py-4 text-right">
-                    <button
-                      onClick={() => handleDelete(r.id)}
-                      aria-label="Borrar confirmación"
-                      className="flex items-center justify-center"
-                      style={{ width: 32, height: 32, borderRadius: "50%", border: "none", background: "rgba(161,59,46,0.12)", color: "#a13b2e", cursor: "pointer" }}
+              {filtered.map((r, i) => {
+                const accent = r.asistencia === "si" ? "#8B6530" : "#a13b2e";
+                const isHovered = hoveredId === r.id;
+                const bg = isHovered ? "rgba(176,129,63,0.1)" : i % 2 === 0 ? "#ffffff" : "rgba(250,246,238,0.75)";
+                return (
+                  <motion.tr
+                    key={r.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: Math.min(i * 0.03, 0.3), ease: "easeOut" }}
+                    whileHover={{ y: -2 }}
+                    onHoverStart={() => setHoveredId(r.id)}
+                    onHoverEnd={() => setHoveredId(null)}
+                    style={{ cursor: "default" }}
+                  >
+                    <td
+                      className="px-4 py-3.5 transition-colors duration-200"
+                      style={{ background: bg, borderTopLeftRadius: 14, borderBottomLeftRadius: 14, boxShadow: `inset 4px 0 0 0 ${accent}` }}
                     >
-                      <FaTrash size={13} />
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
+                      <div className="flex items-center gap-3">
+                        <Avatar name={r.nombre_apellido} />
+                        <span className="font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5 transition-colors duration-200" style={{ background: bg }}>
+                      <AsistenciaBadge value={r.asistencia} />
+                    </td>
+                    <td className="px-4 py-3.5 transition-colors duration-200" style={{ background: bg }}>
+                      <RestriccionBadge value={r.restriccion} />
+                    </td>
+                    <td
+                      className="px-4 py-3.5 text-base font-semibold italic transition-colors duration-200 max-w-[200px] truncate"
+                      style={{ background: bg, color: "#6b6b62" }}
+                      title={r.restriccion_otro || ""}
+                    >
+                      {r.restriccion_otro || "—"}
+                    </td>
+                    <td className="px-4 py-3.5 transition-colors duration-200" style={{ background: bg }}>
+                      <FechaHora value={r.created_at} />
+                    </td>
+                    <td
+                      className="px-4 py-3.5 text-right transition-colors duration-200"
+                      style={{ background: bg, borderTopRightRadius: 14, borderBottomRightRadius: 14 }}
+                    >
+                      <motion.button
+                        onClick={() => handleDelete(r.id)}
+                        aria-label="Borrar confirmación"
+                        className="flex items-center justify-center ml-auto"
+                        style={{ width: 32, height: 32, borderRadius: "50%", border: "none", background: "rgba(161,59,46,0.12)", color: "#a13b2e", cursor: "pointer" }}
+                        whileHover={{ scale: 1.14, backgroundColor: "rgba(161,59,46,0.22)" }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <FaTrash size={13} />
+                      </motion.button>
+                    </td>
+                  </motion.tr>
+                );
+              })}
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
