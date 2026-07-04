@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { FaDownload, FaImage, FaVideo } from "react-icons/fa";
+import { FaDownload, FaImage, FaTrash, FaVideo } from "react-icons/fa";
 import { authFetch } from "../auth/authService";
 import { API_BASE_URL } from "../config";
+import { confirmDelete, notifyError } from "../utils/swal";
 import StatCard from "./StatCard";
 import StorageCard from "./StorageCard";
 import TiltCard from "../components/TiltCard";
@@ -54,6 +55,21 @@ export default function DrivePanel() {
     if (filter === "videos") return media.filter(isVideo);
     return media;
   }, [media, filter]);
+
+  const handleDelete = async (id, m) => {
+    const ok = await confirmDelete({
+      title: isVideo(m) ? "¿Borrar este video?" : "¿Borrar esta foto?",
+      text: "Se va a eliminar del servidor y ya no va a estar disponible para nadie. No se puede deshacer.",
+    });
+    if (!ok) return;
+    try {
+      const res = await authFetch(`${API_BASE_URL}/api/media/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("request_failed");
+      setMedia((prev) => prev.filter((item) => item.id !== id));
+    } catch {
+      notifyError("No se pudo borrar el archivo.");
+    }
+  };
 
   const handleDownloadAll = async () => {
     setZipError("");
@@ -150,7 +166,7 @@ export default function DrivePanel() {
               transition={{ duration: 0.35, delay: Math.min(i * 0.03, 0.4), ease: "easeOut" }}
             >
               <TiltCard className="card-gold card-gold-interactive overflow-hidden flex flex-col" maxTilt={6}>
-                <div style={{ aspectRatio: "4 / 3", background: "#20302A", overflow: "hidden" }} className="flex items-center justify-center">
+                <div style={{ position: "relative", aspectRatio: "4 / 3", background: "#20302A", overflow: "hidden" }} className="flex items-center justify-center">
                   {isImage(m) ? (
                     <img src={m.url} alt={m.original_filename} className="w-full h-full object-cover" loading="lazy" />
                   ) : isVideo(m) ? (
@@ -158,6 +174,25 @@ export default function DrivePanel() {
                   ) : (
                     <FaImage className="text-4xl" style={{ color: "#C7A063" }} />
                   )}
+                  <button
+                    onClick={() => handleDelete(m.id, m)}
+                    aria-label="Borrar archivo"
+                    className="flex items-center justify-center"
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      width: 30,
+                      height: 30,
+                      borderRadius: "50%",
+                      border: "none",
+                      background: "rgba(32,48,42,0.75)",
+                      color: "#e08a7d",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <FaTrash size={13} />
+                  </button>
                 </div>
                 <div className="p-3 flex flex-col gap-1.5">
                   <span className="font-body font-semibold text-base truncate" style={{ color: "#20302A" }} title={m.original_filename}>

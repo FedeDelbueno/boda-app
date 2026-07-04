@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { isMobile } from "react-device-detect";
+import { FaTrash } from "react-icons/fa";
 import { authFetch } from "../auth/authService";
 import { API_BASE_URL } from "../config";
 import { downloadCsv } from "../utils/csv";
+import { confirmDelete, notifyError } from "../utils/swal";
 import StatCard from "./StatCard";
 import FechaHora from "./FechaHora";
 
@@ -62,6 +64,21 @@ export default function RsvpPanel() {
     if (!q) return rsvps;
     return rsvps.filter((r) => r.nombre_apellido.toLowerCase().includes(q));
   }, [rsvps, search]);
+
+  const handleDelete = async (id) => {
+    const ok = await confirmDelete({
+      title: "¿Borrar esta confirmación?",
+      text: "Se va a eliminar esta respuesta de RSVP. No se puede deshacer.",
+    });
+    if (!ok) return;
+    try {
+      const res = await authFetch(`${API_BASE_URL}/api/rsvp/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("request_failed");
+      setRsvps((prev) => prev.filter((r) => r.id !== id));
+    } catch {
+      notifyError("No se pudo borrar la confirmación.");
+    }
+  };
 
   const handleExport = () => {
     downloadCsv(
@@ -133,7 +150,17 @@ export default function RsvpPanel() {
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</span>
-                <AsistenciaBadge value={r.asistencia} />
+                <div className="flex items-center gap-2">
+                  <AsistenciaBadge value={r.asistencia} />
+                  <button
+                    onClick={() => handleDelete(r.id)}
+                    aria-label="Borrar confirmación"
+                    className="flex items-center justify-center"
+                    style={{ width: 32, height: 32, borderRadius: "50%", border: "none", background: "rgba(161,59,46,0.12)", color: "#a13b2e", cursor: "pointer" }}
+                  >
+                    <FaTrash size={13} />
+                  </button>
+                </div>
               </div>
               <div className="flex flex-col gap-1.5" style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
                 <div className="flex justify-between gap-3">
@@ -163,7 +190,7 @@ export default function RsvpPanel() {
           <table className="w-full font-body text-left" style={{ borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "2px solid rgba(176,129,63,0.35)" }}>
-                {["Nombre", "Asistencia", "Restricción", "Detalle", "Fecha"].map((h) => (
+                {["Nombre", "Asistencia", "Restricción", "Detalle", "Fecha", ""].map((h) => (
                   <th key={h} className="px-4 py-4 text-base font-bold uppercase" style={{ color: "#6b4423", letterSpacing: "0.06em" }}>
                     {h}
                   </th>
@@ -187,11 +214,21 @@ export default function RsvpPanel() {
                   <td className="px-4 py-4">
                     <FechaHora value={r.created_at} />
                   </td>
+                  <td className="px-4 py-4 text-right">
+                    <button
+                      onClick={() => handleDelete(r.id)}
+                      aria-label="Borrar confirmación"
+                      className="flex items-center justify-center"
+                      style={{ width: 32, height: 32, borderRadius: "50%", border: "none", background: "rgba(161,59,46,0.12)", color: "#a13b2e", cursor: "pointer" }}
+                    >
+                      <FaTrash size={13} />
+                    </button>
+                  </td>
                 </motion.tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
+                  <td colSpan={6} className="px-4 py-8 text-center text-lg font-semibold" style={{ color: "#8B6530" }}>
                     No hay respuestas que coincidan.
                   </td>
                 </tr>
