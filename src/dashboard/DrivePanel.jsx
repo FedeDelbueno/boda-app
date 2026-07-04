@@ -4,6 +4,7 @@ import { FaDownload, FaImage, FaVideo } from "react-icons/fa";
 import { authFetch } from "../auth/authService";
 import { API_BASE_URL } from "../config";
 import StatCard from "./StatCard";
+import StorageCard from "./StorageCard";
 import TiltCard from "../components/TiltCard";
 
 const FILTERS = [
@@ -87,6 +88,8 @@ export default function DrivePanel() {
 
   return (
     <div>
+      <StorageCard />
+
       <div className="flex flex-wrap gap-4 mb-8">
         <StatCard value={media.length} label="Archivos subidos" accent="#B0813F" />
         <StatCard value={media.filter(isImage).length} label="Fotos" accent="#8B6530" />
