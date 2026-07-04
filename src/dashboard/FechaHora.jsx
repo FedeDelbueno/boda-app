@@ -12,8 +12,8 @@ export default function FechaHora({ value }) {
         {fecha}
       </span>
       <span
-        className="font-body font-bold"
-        style={{ fontSize: 15, color: "#B0813F", letterSpacing: "0.04em" }}
+        className="font-body font-extrabold"
+        style={{ fontSize: 18, color: "#8B6530", letterSpacing: "0.04em" }}
       >
         {hora} hs
       </span>
