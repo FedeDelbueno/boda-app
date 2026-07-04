@@ -83,7 +83,7 @@ export default function SongsPanel() {
               <span className="font-serif font-bold text-xl" style={{ color: "#20302A" }}>{s.tema_interprete}</span>
               <div className="flex justify-between gap-3" style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
                 <span className="font-body font-bold text-sm uppercase" style={{ color: "#8B6530", letterSpacing: "0.06em" }}>Sugerida por</span>
-                <span className="font-body font-semibold text-base text-right" style={{ color: "#3a3a35" }}>{s.nombre}</span>
+                <span className="font-body font-bold text-base text-right" style={{ color: "#2a2a26" }}>{s.nombre}</span>
               </div>
               <div style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
                 <FechaHora value={s.created_at} />
@@ -116,8 +116,8 @@ export default function SongsPanel() {
                   whileHover={{ backgroundColor: "rgba(176,129,63,0.07)" }}
                   transition={{ duration: 0.15 }}
                 >
-                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#20302A" }}>{s.tema_interprete}</td>
-                  <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{s.nombre}</td>
+                  <td className="px-4 py-4 font-serif font-bold text-xl" style={{ color: "#20302A" }}>{s.tema_interprete}</td>
+                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#2a2a26" }}>{s.nombre}</td>
                   <td className="px-4 py-4">
                     <FechaHora value={s.created_at} />
                   </td>

@@ -165,12 +165,12 @@ export default function RsvpPanel() {
               <div className="flex flex-col gap-1.5" style={{ borderTop: "1px solid rgba(176,129,63,0.15)", paddingTop: 10 }}>
                 <div className="flex justify-between gap-3">
                   <span className="font-body font-bold text-sm uppercase" style={{ color: "#8B6530", letterSpacing: "0.06em" }}>Restricción</span>
-                  <span className="font-body font-semibold text-base text-right" style={{ color: "#3a3a35" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</span>
+                  <span className="font-body font-bold text-base text-right" style={{ color: "#2a2a26" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</span>
                 </div>
                 {r.restriccion_otro && (
                   <div className="flex justify-between gap-3">
                     <span className="font-body font-bold text-sm uppercase" style={{ color: "#8B6530", letterSpacing: "0.06em" }}>Detalle</span>
-                    <span className="font-body font-semibold text-base text-right" style={{ color: "#3a3a35" }}>{r.restriccion_otro}</span>
+                    <span className="font-body font-bold text-base text-right" style={{ color: "#2a2a26" }}>{r.restriccion_otro}</span>
                   </div>
                 )}
               </div>
@@ -205,12 +205,12 @@ export default function RsvpPanel() {
                   whileHover={{ backgroundColor: "rgba(176,129,63,0.07)" }}
                   transition={{ duration: 0.15 }}
                 >
-                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#20302A" }}>{r.nombre_apellido}</td>
+                  <td className="px-4 py-4 font-serif font-bold text-xl" style={{ color: "#20302A" }}>{r.nombre_apellido}</td>
                   <td className="px-4 py-4">
                     <AsistenciaBadge value={r.asistencia} />
                   </td>
-                  <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</td>
-                  <td className="px-4 py-4 text-lg font-medium" style={{ color: "#3a3a35" }}>{r.restriccion_otro || "—"}</td>
+                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#2a2a26" }}>{RESTRICCION_LABELS[r.restriccion] || r.restriccion || "—"}</td>
+                  <td className="px-4 py-4 text-lg font-semibold" style={{ color: "#2a2a26" }}>{r.restriccion_otro || "—"}</td>
                   <td className="px-4 py-4">
                     <FechaHora value={r.created_at} />
                   </td>
