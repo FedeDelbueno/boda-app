@@ -134,7 +134,7 @@
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 440px;
+    max-width: 480px;
     background: rgba(246, 241, 231, 0.97);
     backdrop-filter: blur(6px);
     border-radius: 24px;
@@ -245,71 +245,6 @@
     margin-top: 2px;
   }
 
-  /* ── Previsualización ── */
-  .preview {
-    display: none;
-    align-items: center;
-    gap: 12px;
-    text-align: left;
-    background: #fff;
-    border: 1.5px solid rgba(176,129,63,0.3);
-    border-radius: 16px;
-    padding: 10px 12px;
-    margin-bottom: 16px;
-    animation: cardIn 0.35s ease;
-  }
-  .preview.visible { display: flex; }
-  .preview-thumb {
-    flex-shrink: 0;
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--dorado-claro), var(--dorado));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--marfil);
-    font-size: 22px;
-    overflow: hidden;
-  }
-  .preview-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .preview-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .file-name {
-    font-size: 14.5px;
-    color: var(--pino);
-    margin: 0;
-    word-break: break-word;
-    line-height: 1.3;
-  }
-  .file-size {
-    font-size: 12.5px;
-    color: var(--dorado-oscuro);
-    margin: 2px 0 0;
-  }
-  .remove-btn {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(176,129,63,0.12);
-    color: var(--dorado-oscuro);
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, transform 0.15s ease;
-  }
-  .remove-btn:hover { background: rgba(176,129,63,0.25); transform: scale(1.08); }
-
   /* ── Botones ── */
   .btn {
     display: inline-block;
@@ -338,48 +273,6 @@
   }
   .btn-secondary:hover:not(:disabled) { background: rgba(176,129,63,0.08); box-shadow: none; }
 
-  /* ── Barra de progreso ── */
-  .progress-wrap {
-    position: relative;
-    width: 100%;
-    height: 26px;
-    border-radius: 999px;
-    background: rgba(176,129,63,0.15);
-    overflow: hidden;
-    margin: 6px 0 18px;
-    display: none;
-    border: 1px solid rgba(176,129,63,0.25);
-  }
-  .progress-bar {
-    height: 100%;
-    width: 0%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--dorado-claro), var(--dorado));
-    background-image:
-      repeating-linear-gradient(135deg, rgba(255,255,255,0.28) 0 10px, transparent 10px 20px),
-      linear-gradient(90deg, var(--dorado-claro), var(--dorado));
-    background-size: 34px 34px, auto;
-    animation: barShimmer 1s linear infinite;
-    box-shadow: 0 0 12px rgba(176,129,63,0.6);
-    transition: width 0.2s ease;
-  }
-  @keyframes barShimmer {
-    from { background-position: 0 0, 0 0; }
-    to { background-position: -34px 0, 0 0; }
-  }
-  .progress-label {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--pino);
-    text-shadow: 0 1px 2px rgba(255,255,255,0.6);
-    letter-spacing: 0.02em;
-  }
-
   .status {
     font-size: 15px;
     margin: 0 0 14px;
@@ -401,10 +294,157 @@
   }
 
   .hidden { display: none !important; }
+
+  /* ── Botones de acción (cámara / galería) ── */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 8px;
+    border-radius: 18px;
+    border: 1.5px solid rgba(176,129,63,0.4);
+    background: #fff;
+    color: var(--pino);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .action-btn:hover { background: rgba(176,129,63,0.08); border-color: var(--dorado); }
+  .action-btn:active { transform: scale(0.97); }
+  .action-btn .emoji { font-size: 26px; line-height: 1; }
+  .action-btn.primary {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--dorado-claro), var(--dorado));
+    color: var(--marfil);
+    border-color: transparent;
+    box-shadow: 0 8px 24px rgba(176,129,63,0.4);
+    font-size: 18px;
+    padding: 15px 8px;
+  }
+  .action-btn.primary:hover { background: linear-gradient(135deg, var(--dorado-claro), var(--dorado)); }
+  .file-input { display: none; }
+  .hint {
+    font-size: 15px;
+    color: var(--dorado-oscuro);
+    margin: -6px 0 14px;
+    min-height: 0;
+  }
+  .hint.warn { color: #a13b2e; }
+
+  /* El drop zone solo tiene sentido en compu */
+  @media (hover: none) { .drop-zone { display: none; } }
+
+  /* ── Resumen + cola ── */
+  .summary {
+    display: none;
+    text-align: left;
+    background: #fff;
+    border: 1.5px solid rgba(176,129,63,0.3);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin: 4px 0 12px;
+  }
+  .summary.visible { display: block; }
+  .summary-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 16px;
+    color: var(--pino);
+    margin-bottom: 8px;
+  }
+  .summary-top strong { font-size: 17px; }
+  .summary-top span { font-size: 14px; color: var(--dorado-oscuro); white-space: nowrap; }
+  .bar {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(176,129,63,0.15);
+    overflow: hidden;
+  }
+  .bar > div {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--dorado-claro), var(--dorado));
+    transition: width 0.25s ease;
+  }
+  .summary.done .bar > div { background: #5a8a5f; }
+  .summary-note { font-size: 13.5px; color: #6b6b62; margin: 8px 0 0; line-height: 1.35; }
+
+  .queue {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+    text-align: left;
+    max-height: 46vh;
+    overflow-y: auto;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(176,129,63,0.15);
+    animation: cardIn 0.3s ease;
+  }
+  .item:last-child { border-bottom: none; }
+  .thumb {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--dorado-claro), var(--dorado));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    overflow: hidden;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 14.5px;
+    color: var(--pino);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .item-status { font-size: 13px; color: var(--dorado-oscuro); margin: 1px 0 4px; }
+  .item.error .item-status { color: #a13b2e; }
+  .item.done .item-status { color: #2f6b3f; }
+  .item .bar { height: 5px; }
+  .item.done .bar > div { background: #5a8a5f; }
+  .item.error .bar > div { background: #c0392b; }
+  .item-btn {
+    flex-shrink: 0;
+    border: none;
+    background: rgba(176,129,63,0.12);
+    color: var(--dorado-oscuro);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .item-btn:hover { background: rgba(176,129,63,0.25); }
 </style>
 </head>
 <body>
-
 <div class="bg-gradient" aria-hidden="true"></div>
 <div class="bg-glow" aria-hidden="true"></div>
 <div class="particles" id="particles" aria-hidden="true"></div>
@@ -412,59 +452,54 @@
 <img src="/images/lavender_dorado.png" class="lavender lavender-br" alt="" aria-hidden="true" />
 
 <div class="card">
-  <div id="formView">
-    <p class="icon">📷</p>
-    <h1>Compartí el momento</h1>
-    <p class="eyebrow">Lucia &amp; Agustín · 21.11.2026</p>
-    <p class="desc">Elegí una foto o video de tu celular, o sacá uno nuevo. Se sube directo, sin necesidad de iniciar sesión.</p>
+  <p class="icon">📷</p>
+  <h1>Compartí el momento</h1>
+  <p class="eyebrow">Lucía &amp; Agustín · 21.11.2026</p>
+  <p class="desc">Sacá fotos y videos o elegí varios de tu galería. Se suben solos, de a poco, aunque el wifi esté lento. Podés seguir disfrutando de la fiesta.</p>
 
-    <div class="field">
-      <span class="field-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </span>
-      <input type="text" id="guestName" placeholder="Tu nombre (opcional)" />
-    </div>
+  <div class="field">
+    <span class="field-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </span>
+    <input type="text" id="guestName" placeholder="Tu nombre" maxlength="60" autocomplete="name" />
+  </div>
+  <p class="hint" id="nameHint"></p>
 
-    <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Elegir foto o video">
-      <div class="drop-icon">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1"/><path d="M7 9l5-5 5 5"/><path d="M12 4v13"/></svg>
-      </div>
-      <p class="drop-text">Arrastrá tu foto o video acá<span>o tocá para elegir desde tu celular</span></p>
-      <input type="file" id="fileInput" accept="image/*,video/*" />
-    </div>
+  <div class="actions">
+    <button type="button" class="action-btn primary" data-pick="gallery"><span class="emoji">🖼️</span> Elegir de la galería</button>
+    <button type="button" class="action-btn" data-pick="photo"><span class="emoji">📸</span> Sacar foto</button>
+    <button type="button" class="action-btn" data-pick="video"><span class="emoji">🎥</span> Grabar video</button>
+  </div>
+  <input type="file" class="file-input" id="pickGallery" accept="image/*,video/*" multiple />
+  <input type="file" class="file-input" id="pickPhoto" accept="image/*" capture="environment" />
+  <input type="file" class="file-input" id="pickVideo" accept="video/*" capture="environment" />
 
-    <div class="preview" id="previewWrap">
-      <div class="preview-thumb" id="previewThumb">📎</div>
-      <div class="preview-info">
-        <p class="file-name" id="fileName"></p>
-        <p class="file-size" id="fileSize"></p>
-      </div>
-      <button class="remove-btn" id="removeBtn" type="button" aria-label="Quitar archivo">✕</button>
-    </div>
-
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar" id="progressBar"></div>
-      <span class="progress-label" id="progressLabel">0%</span>
-    </div>
-
-    <p class="status" id="status"></p>
-
-    <button class="btn hidden" id="uploadBtn" style="margin-top:6px">Subir ahora</button>
+  <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Arrastrar fotos o videos">
+    <p class="drop-text">O arrastrá tus fotos y videos acá<span>podés soltar varios a la vez</span></p>
   </div>
 
-  <div id="successView" class="hidden">
-    <p class="icon success-icon" id="successIcon">💛</p>
-    <h1>¡Gracias!</h1>
-    <p class="desc" id="successText">Tu foto ya está con los novios. ¡Subí otra cuando quieras!</p>
-    <button class="btn btn-secondary" id="resetBtn">Subir otra</button>
+  <div class="summary" id="summary" aria-live="polite">
+    <div class="summary-top"><strong id="summaryText"></strong><span id="summaryPct"></span></div>
+    <div class="bar"><div id="summaryBar"></div></div>
+    <p class="summary-note" id="summaryNote"></p>
   </div>
+
+  <ul class="queue" id="queue"></ul>
 </div>
 
 <script>
-  // ── Configuración: URL de tu API de Laravel en Cloud ──
-  var API_BASE_URL = 'https://luyaguscasamiento.duckdns.org';
-  var CHUNK_SIZE = 5 * 1024 * 1024; // 5MB por pedazo
-  // ────────────────────────────────────────────────────────────────────────────────
+  // ── Configuración ──
+  // En local (yarn start) usa la API de `php artisan serve`; publicado, la real.
+  var API_BASE_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+    ? 'http://localhost:8000'
+    : 'https://luyaguscasamiento.duckdns.org';
+  var CHUNK_SIZE = 5 * 1024 * 1024;        // 5MB por pedazo (igual que el backend)
+  var MAX_FILE_BYTES = 1.5 * 1024 * 1024 * 1024;
+  var PARALLEL_FILES = 2;                  // archivos subiéndose a la vez
+  var MAX_CHUNK_ATTEMPTS = 8;              // reintentos por pedazo antes de pausar
+  var THUMB_SIZE = 480;
+  var NAME_KEY = 'boda_guest_name';
+  // ───────────────────
 
   // ── Partículas flotantes de fondo ──
   (function initParticles() {
@@ -479,88 +514,66 @@
     for (var i = 0; i < count; i++) {
       var el = document.createElement('div');
       var size = 3 + Math.round(Math.random() * 8);
-      var square = Math.random() < 0.3;
-      var duration = 11 + Math.random() * 13;
-      var delay = Math.random() * 8;
-      var drift = Math.round((Math.random() - 0.5) * 90);
       el.className = 'particle';
       el.style.left = (Math.random() * 100) + '%';
       el.style.width = size + 'px';
       el.style.height = size + 'px';
-      el.style.borderRadius = square ? '2px' : '50%';
+      el.style.borderRadius = Math.random() < 0.3 ? '2px' : '50%';
       el.style.background = colors[i % colors.length];
-      el.style.setProperty('--drift', drift + 'px');
-      el.style.animationDuration = duration + 's';
-      el.style.animationDelay = delay + 's';
+      el.style.setProperty('--drift', Math.round((Math.random() - 0.5) * 90) + 'px');
+      el.style.animationDuration = (11 + Math.random() * 13) + 's';
+      el.style.animationDelay = (Math.random() * 8) + 's';
       container.appendChild(el);
     }
   })();
 
-  var fileInput = document.getElementById('fileInput');
-  var dropZone = document.getElementById('dropZone');
-  var guestNameInput = document.getElementById('guestName');
-  var previewWrap = document.getElementById('previewWrap');
-  var previewThumb = document.getElementById('previewThumb');
-  var fileNameEl = document.getElementById('fileName');
-  var fileSizeEl = document.getElementById('fileSize');
-  var removeBtn = document.getElementById('removeBtn');
-  var uploadBtn = document.getElementById('uploadBtn');
-  var statusEl = document.getElementById('status');
-  var progressWrap = document.getElementById('progressWrap');
-  var progressBar = document.getElementById('progressBar');
-  var progressLabel = document.getElementById('progressLabel');
-  var formView = document.getElementById('formView');
-  var successView = document.getElementById('successView');
-  var successIcon = document.getElementById('successIcon');
-  var successText = document.getElementById('successText');
-  var resetBtn = document.getElementById('resetBtn');
+  var $ = function (id) { return document.getElementById(id); };
+  var guestNameInput = $('guestName');
+  var nameHint = $('nameHint');
+  var queueEl = $('queue');
+  var inputs = { gallery: $('pickGallery'), photo: $('pickPhoto'), video: $('pickVideo') };
 
-  var selectedFile = null;
-  var previewUrl = null;
+  var queue = [];        // { id, file, guest, status, nextChunk, sentBytes, attempts, el, error }
+  var active = 0;
+  var nameWarned = false;
+  var wakeLock = null;
 
-  function isVideo(file) {
-    return !!file && file.type.indexOf('video/') === 0;
-  }
-
-  function selectFile(file) {
-    selectedFile = file || null;
-    resumeState = null;
-    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
-    if (!selectedFile) {
-      previewWrap.classList.remove('visible');
-      uploadBtn.classList.add('hidden');
-      return;
-    }
-    fileNameEl.textContent = selectedFile.name;
-    fileSizeEl.textContent = (Math.round(selectedFile.size / 1024 / 1024 * 10) / 10) + ' MB';
-
-    if (isVideo(selectedFile)) {
-      previewThumb.innerHTML = '🎥';
-    } else if (selectedFile.type.indexOf('image/') === 0) {
-      previewUrl = URL.createObjectURL(selectedFile);
-      previewThumb.innerHTML = '<img src="' + previewUrl + '" alt="" />';
-    } else {
-      previewThumb.innerHTML = '📎';
-    }
-
-    previewWrap.classList.add('visible');
-    uploadBtn.classList.remove('hidden');
-    setStatus('', '');
-  }
-
-  fileInput.addEventListener('change', function () {
-    selectFile(fileInput.files[0] || null);
+  // ── Nombre del invitado (se recuerda para la próxima) ──
+  try { guestNameInput.value = localStorage.getItem(NAME_KEY) || ''; } catch (e) {}
+  guestNameInput.addEventListener('input', function () {
+    try { localStorage.setItem(NAME_KEY, guestNameInput.value.trim()); } catch (e) {}
+    if (guestNameInput.value.trim()) setHint('');
   });
 
-  dropZone.addEventListener('click', function () { fileInput.click(); });
-  dropZone.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-  });
-  ['dragenter', 'dragover'].forEach(function (evt) {
-    dropZone.addEventListener(evt, function (e) {
-      e.preventDefault();
-      dropZone.classList.add('drag-over');
+  function setHint(msg, warn) {
+    nameHint.textContent = msg;
+    nameHint.className = 'hint' + (warn ? ' warn' : '');
+  }
+
+  // ── Elegir archivos ──
+  document.querySelectorAll('[data-pick]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      // Pedimos el nombre una vez (así las fotos quedan ordenadas por
+      // invitado), pero si insiste lo dejamos subir sin nombre.
+      if (!guestNameInput.value.trim() && !nameWarned) {
+        nameWarned = true;
+        setHint('Escribí tu nombre así los novios saben quién la sacó (o tocá de nuevo para seguir sin nombre).', true);
+        guestNameInput.focus();
+        return;
+      }
+      inputs[btn.getAttribute('data-pick')].click();
     });
+  });
+  Object.keys(inputs).forEach(function (k) {
+    inputs[k].addEventListener('change', function () {
+      addFiles(inputs[k].files);
+      inputs[k].value = '';
+    });
+  });
+
+  var dropZone = $('dropZone');
+  ['dragenter', 'dragover'].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
   });
   ['dragleave', 'dragend'].forEach(function (evt) {
     dropZone.addEventListener(evt, function () { dropZone.classList.remove('drag-over'); });
@@ -568,33 +581,17 @@
   dropZone.addEventListener('drop', function (e) {
     e.preventDefault();
     dropZone.classList.remove('drag-over');
-    var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if (!file) return;
-    try {
-      var dt = new DataTransfer();
-      dt.items.add(file);
-      fileInput.files = dt.files;
-    } catch (err) { /* Safari antiguo: seguimos igual con selectFile */ }
-    selectFile(file);
+    if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
   });
+  dropZone.addEventListener('click', function () { inputs.gallery.click(); });
 
-  removeBtn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    fileInput.value = '';
-    selectFile(null);
-  });
-
-  function setStatus(msg, type) {
-    statusEl.textContent = msg;
-    statusEl.className = 'status' + (type ? ' ' + type : '');
+  function isVideo(file) {
+    return /^video\//.test(file.type) || /\.(mp4|mov|m4v|webm|mkv|3gp|avi)$/i.test(file.name);
   }
 
-  function sanitizeName(name) {
-    return (name || 'invitado')
-      .normalize('NFD').replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-zA-Z0-9 _-]/g, '')
-      .trim()
-      .replace(/\s+/g, '_') || 'invitado';
+  function formatSize(bytes) {
+    var mb = bytes / 1048576;
+    return mb >= 1 ? (Math.round(mb * 10) / 10) + ' MB' : Math.max(1, Math.round(bytes / 1024)) + ' KB';
   }
 
   function makeUploadId() {
@@ -602,130 +599,346 @@
     return 'up_' + Date.now() + '_' + Math.random().toString(36).slice(2);
   }
 
-  function sendChunk(uploadId, chunkIndex, totalChunks, blob, meta, attempt) {
-    attempt = attempt || 1;
-    var form = new FormData();
-    form.append('upload_id', uploadId);
-    form.append('chunk_index', chunkIndex);
-    form.append('total_chunks', totalChunks);
-    form.append('original_filename', meta.originalFilename);
-    form.append('mime_type', meta.mimeType);
-    form.append('guest_name', meta.guestName);
-    form.append('chunk', blob);
+  function addFiles(fileList) {
+    var guest = guestNameInput.value.trim();
+    Array.prototype.forEach.call(fileList, function (file) {
+      var item = {
+        id: makeUploadId(),
+        file: file,
+        guest: guest,
+        status: 'waiting',
+        nextChunk: 0,
+        sentBytes: 0,
+        error: '',
+        thumbBlob: null,
+      };
+      if (!/^(image|video)\//.test(file.type) && !/\.(jpe?g|png|gif|webp|heic|heif|bmp|mp4|mov|m4v|webm|mkv|3gp|avi)$/i.test(file.name)) {
+        item.status = 'error';
+        item.error = 'Solo se pueden subir fotos y videos';
+        item.fatal = true;
+      } else if (file.size > MAX_FILE_BYTES) {
+        item.status = 'error';
+        item.error = 'Muy pesado (máx. 1,5 GB). Probá con un video más corto.';
+        item.fatal = true;
+      }
+      queue.push(item);
+      renderItem(item, true);
+    });
+    renderSummary();
+    pump();
+  }
 
-    return fetch(API_BASE_URL + '/api/media/chunk', { method: 'POST', body: form })
-      .then(function (res) {
-        if (!res.ok) throw new Error('chunk_failed');
-        return res.json();
+  // ── Cola: siempre hay hasta PARALLEL_FILES archivos subiendo ──
+  function pump() {
+    if (!navigator.onLine) { renderSummary(); return; }
+    while (active < PARALLEL_FILES) {
+      var next = queue.find(function (it) { return it.status === 'waiting'; });
+      if (!next) break;
+      startItem(next);
+    }
+    updateWakeLock();
+    renderSummary();
+  }
+
+  function startItem(item) {
+    active++;
+    item.status = 'uploading';
+    item.error = '';
+    renderItem(item);
+
+    uploadItem(item)
+      .then(function () {
+        item.status = 'done';
+        item.sentBytes = item.file.size;
       })
       .catch(function (err) {
-        // Reintenta el mismo pedazo hasta 3 veces antes de rendirse —
-        // esto es lo que hace que un video largo aguante un wifi con cortes.
-        if (attempt < 3) {
-          return sendChunk(uploadId, chunkIndex, totalChunks, blob, meta, attempt + 1);
-        }
-        throw err;
+        item.status = 'error';
+        item.fatal = !!(err && err.fatal);
+        item.error = (err && err.userMessage) || (item.fatal
+          ? 'No se pudo subir este archivo.'
+          : 'Se cortó la conexión. Tocá "Reintentar".');
+      })
+      .then(function () {
+        active--;
+        renderItem(item);
+        pump();
       });
   }
 
-  // Guarda en qué pedazo se quedó la subida actual, para que si el usuario
-  // toca "Subir ahora" de nuevo después de un corte, arranque desde ahí y no
-  // desde cero.
-  var resumeState = null;
+  function uploadItem(item) {
+    var file = item.file;
+    var totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
 
-  function uploadInChunks(file, guestName, onProgress) {
-    if (!resumeState || resumeState.file !== file) {
-      resumeState = {
-        file: file,
-        uploadId: makeUploadId(),
-        nextChunk: 0,
-      };
+    // La miniatura se genera mientras sube (no frena la subida).
+    var thumbPromise = makeThumb(file).then(function (blob) {
+      item.thumbBlob = blob;
+      if (blob && !item.el.querySelector('.thumb img')) {
+        item.el.querySelector('.thumb').innerHTML = '<img alt="" src="' + URL.createObjectURL(blob) + '" />';
+      }
+      return blob;
+    }).catch(function () { return null; });
+
+    function sendNext() {
+      if (item.nextChunk >= totalChunks) return Promise.resolve();
+      var index = item.nextChunk;
+      var start = index * CHUNK_SIZE;
+      var blob = file.slice(start, Math.min(start + CHUNK_SIZE, file.size));
+
+      return sendChunk(item, index, totalChunks, blob, 1).then(function () {
+        item.nextChunk = index + 1;
+        item.sentBytes = Math.min(item.nextChunk * CHUNK_SIZE, file.size);
+        renderItem(item);
+        renderSummary();
+        return sendNext();
+      });
     }
 
-    var totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
-    var meta = {
-      originalFilename: file.name,
-      mimeType: file.type || 'application/octet-stream',
-      guestName: guestName || '',
-    };
-
-    var sentBytes = Math.min(resumeState.nextChunk * CHUNK_SIZE, file.size);
-    onProgress(Math.round((sentBytes / file.size) * 100));
-
-    var chain = Promise.resolve();
-
-    var _loop = function (index) {
-      var start = index * CHUNK_SIZE;
-      var end = Math.min(start + CHUNK_SIZE, file.size);
-      var blob = file.slice(start, end);
-      chain = chain.then(function () {
-        return sendChunk(resumeState.uploadId, index, totalChunks, blob, meta).then(function () {
-          resumeState.nextChunk = index + 1;
-          sentBytes = Math.min(resumeState.nextChunk * CHUNK_SIZE, file.size);
-          onProgress(Math.round((sentBytes / file.size) * 100));
-        });
-      });
-    };
-
-    for (var i = resumeState.nextChunk; i < totalChunks; i++) _loop(i);
-
-    return chain.then(function () {
-      resumeState = null;
+    return sendNext().then(function () {
+      return thumbPromise.then(function (blob) { if (blob) return sendThumb(item.id, blob); });
     });
   }
 
-  function setProgress(pct) {
-    progressBar.style.width = pct + '%';
-    progressLabel.textContent = pct + '%';
+  function sendChunk(item, chunkIndex, totalChunks, blob, attempt) {
+    var form = new FormData();
+    form.append('upload_id', item.id);
+    form.append('chunk_index', chunkIndex);
+    form.append('total_chunks', totalChunks);
+    form.append('original_filename', item.file.name || ('archivo-' + Date.now()));
+    form.append('mime_type', item.file.type || '');
+    form.append('guest_name', item.guest);
+    form.append('chunk', blob, 'blob');
+
+    return fetch(API_BASE_URL + '/api/media/chunk', {
+      method: 'POST',
+      body: form,
+      headers: { Accept: 'application/json' },
+    }).then(function (res) {
+      if (res.ok) return res.json();
+      return res.json().catch(function () { return {}; }).then(function (body) {
+        var err = new Error('http_' + res.status);
+        err.status = res.status;
+        err.userMessage = body.error || (body.message && res.status === 422 ? body.message : '');
+        err.retryAfter = body.retry_after || Number(res.headers.get('Retry-After')) || 0;
+        // 4xx (salvo 408/429) = el archivo no sirve, reintentar no ayuda.
+        err.fatal = res.status >= 400 && res.status < 500 && res.status !== 408 && res.status !== 429;
+        throw err;
+      });
+    }).catch(function (err) {
+      if (err.fatal || attempt >= MAX_CHUNK_ATTEMPTS) throw err;
+
+      // Espera creciente: 1s, 2s, 4s… (o lo que pida el servidor).
+      var wait = err.retryAfter ? err.retryAfter * 1000 : Math.min(30000, 1000 * Math.pow(2, attempt - 1));
+      if (err.status === 507) {
+        item.error = err.userMessage;
+        item.waitingSpace = true;
+        renderItem(item);
+      }
+      return waitFor(wait).then(function () {
+        item.waitingSpace = false;
+        return sendChunk(item, chunkIndex, totalChunks, blob, attempt + 1);
+      });
+    });
   }
 
-  uploadBtn.addEventListener('click', function () {
-    if (!selectedFile) return;
+  function waitFor(ms) {
+    return new Promise(function (resolve) {
+      var done = false;
+      var finish = function () {
+        if (done) return;
+        done = true;
+        window.removeEventListener('online', finish);
+        resolve();
+      };
+      setTimeout(finish, ms);
+      // Si vuelve la conexión, reintentamos enseguida.
+      window.addEventListener('online', finish);
+    });
+  }
 
-    var uploadingVideo = isVideo(selectedFile);
+  function sendThumb(uploadId, blob) {
+    var form = new FormData();
+    form.append('upload_id', uploadId);
+    form.append('thumb', blob, 'thumb.jpg');
+    return fetch(API_BASE_URL + '/api/media/thumb', {
+      method: 'POST', body: form, headers: { Accept: 'application/json' },
+    }).catch(function () { /* la miniatura es opcional */ });
+  }
 
-    uploadBtn.disabled = true;
-    dropZone.style.pointerEvents = 'none';
-    dropZone.style.opacity = '0.6';
-    removeBtn.style.visibility = 'hidden';
-    progressWrap.style.display = 'block';
-    setProgress(0);
-    setStatus(uploadingVideo ? 'Preparando la subida de tu video…' : 'Preparando la subida de tu foto…');
+  // ── Miniaturas (JPEG chico) para que el panel cargue rápido ──
+  function makeThumb(file) {
+    if (isVideo(file)) return videoThumb(file);
+    if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|heic|heif|gif|bmp)$/i.test(file.name)) return Promise.resolve(null);
+    return new Promise(function (resolve) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        drawThumb(img, img.naturalWidth, img.naturalHeight).then(resolve);
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
 
-    uploadInChunks(selectedFile, sanitizeName(guestNameInput.value), function (pct) {
-        setProgress(pct);
-        setStatus('Subiendo… ' + pct + '%');
-      })
-      .then(function () {
-        successIcon.textContent = uploadingVideo ? '🎥' : '💛';
-        successText.textContent = uploadingVideo
-          ? 'Tu video ya está con los novios. ¡Subí otro cuando quieras!'
-          : 'Tu foto ya está con los novios. ¡Subí otra cuando quieras!';
-        formView.classList.add('hidden');
-        successView.classList.remove('hidden');
-      })
-      .catch(function () {
-        setStatus('Se cortó la subida. Tocá "Subir ahora" de nuevo para continuar donde quedó.', 'error');
-        uploadBtn.disabled = false;
-        dropZone.style.pointerEvents = 'auto';
-        dropZone.style.opacity = '1';
-        removeBtn.style.visibility = 'visible';
-      });
+  function videoThumb(file) {
+    return new Promise(function (resolve) {
+      var url = URL.createObjectURL(file);
+      var video = document.createElement('video');
+      var finished = false;
+      var finish = function (val) {
+        if (finished) return;
+        finished = true;
+        URL.revokeObjectURL(url);
+        resolve(val);
+      };
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.onloadeddata = function () {
+        video.currentTime = Math.min(0.5, (video.duration || 1) / 2);
+      };
+      video.onseeked = function () {
+        drawThumb(video, video.videoWidth, video.videoHeight).then(finish);
+      };
+      video.onerror = function () { finish(null); };
+      setTimeout(function () { finish(null); }, 8000);
+      video.src = url;
+    });
+  }
+
+  function drawThumb(source, w, h) {
+    return new Promise(function (resolve) {
+      if (!w || !h) return resolve(null);
+      var scale = Math.min(1, THUMB_SIZE / Math.max(w, h));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
+      try {
+        canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function (b) { resolve(b); }, 'image/jpeg', 0.75);
+      } catch (e) { resolve(null); }
+    });
+  }
+
+  // ── Render ──
+  function renderItem(item, isNew) {
+    if (isNew) {
+      var li = document.createElement('li');
+      li.className = 'item';
+      li.innerHTML =
+        '<div class="thumb">' + (isVideo(item.file) ? '🎥' : '🖼️') + '</div>' +
+        '<div class="item-info"><p class="item-name"></p><p class="item-status"></p><div class="bar"><div></div></div></div>';
+      li.querySelector('.item-name').textContent = item.file.name || 'archivo';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'item-btn hidden';
+      btn.addEventListener('click', function () { onItemButton(item); });
+      li.appendChild(btn);
+      item.el = li;
+      queueEl.insertBefore(li, queueEl.firstChild);
+    }
+
+    var el = item.el;
+    var pct = item.file.size ? Math.round((item.sentBytes / item.file.size) * 100) : 0;
+    var statusText = {
+      waiting: 'En espera · ' + formatSize(item.file.size),
+      uploading: item.waitingSpace ? (item.error || 'Esperando lugar en el servidor…') : 'Subiendo… ' + pct + '%',
+      done: '✓ Subido · ' + formatSize(item.file.size),
+      error: item.error,
+    }[item.status];
+
+    el.className = 'item ' + item.status;
+    el.querySelector('.item-status').textContent = statusText;
+    el.querySelector('.bar > div').style.width = (item.status === 'done' ? 100 : pct) + '%';
+
+    var btn = el.querySelector('.item-btn');
+    if (item.status === 'error') {
+      btn.textContent = item.fatal ? 'Quitar' : 'Reintentar';
+      btn.classList.remove('hidden');
+    } else if (item.status === 'waiting') {
+      btn.textContent = 'Quitar';
+      btn.classList.remove('hidden');
+    } else {
+      btn.classList.add('hidden');
+    }
+  }
+
+  function onItemButton(item) {
+    if (item.status === 'error' && !item.fatal) {
+      item.status = 'waiting';
+      renderItem(item);
+      pump();
+      return;
+    }
+    if (item.status === 'error' || item.status === 'waiting') {
+      queue.splice(queue.indexOf(item), 1);
+      item.el.remove();
+      renderSummary();
+    }
+  }
+
+  function renderSummary() {
+    var summary = $('summary');
+    var relevant = queue.filter(function (it) { return !it.fatal; });
+    if (!relevant.length) { summary.classList.remove('visible'); return; }
+
+    var total = 0, sent = 0, done = 0, failed = 0, pending = 0;
+    relevant.forEach(function (it) {
+      total += it.file.size;
+      sent += it.status === 'done' ? it.file.size : it.sentBytes;
+      if (it.status === 'done') done++;
+      else if (it.status === 'error') failed++;
+      else pending++;
+    });
+    var pct = total ? Math.round((sent / total) * 100) : 0;
+
+    summary.classList.add('visible');
+    summary.classList.toggle('done', pending === 0 && failed === 0);
+    $('summaryBar').style.width = pct + '%';
+    $('summaryPct').textContent = pct + '%';
+
+    if (pending === 0 && failed === 0) {
+      $('summaryText').textContent = '💛 ¡Listo! ' + done + (done === 1 ? ' archivo subido' : ' archivos subidos');
+      $('summaryNote').textContent = 'Ya están con los novios. Podés seguir sacando y subiendo cuando quieras.';
+    } else {
+      $('summaryText').textContent = 'Subidos ' + done + ' de ' + relevant.length;
+      $('summaryNote').textContent = !navigator.onLine
+        ? '📶 Sin conexión. Seguimos solos apenas vuelva la señal.'
+        : failed && !pending
+          ? 'Algunos no se pudieron subir. Tocá "Reintentar".'
+          : 'No cierres esta página hasta que termine. Podés bloquear la pantalla un ratito, pero si tarda mucho volvé a abrirla.';
+    }
+  }
+
+  // ── Mantener la pantalla prendida mientras sube (si el celu lo permite) ──
+  function updateWakeLock() {
+    var busy = active > 0;
+    if (busy && !wakeLock && navigator.wakeLock) {
+      navigator.wakeLock.request('screen').then(function (lock) {
+        wakeLock = lock;
+        lock.addEventListener('release', function () { wakeLock = null; });
+      }).catch(function () {});
+    } else if (!busy && wakeLock) {
+      wakeLock.release().catch(function () {});
+      wakeLock = null;
+    }
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') updateWakeLock();
   });
 
-  resetBtn.addEventListener('click', function () {
-    fileInput.value = '';
-    selectFile(null);
-    guestNameInput.value = '';
-    uploadBtn.disabled = false;
-    dropZone.style.pointerEvents = 'auto';
-    dropZone.style.opacity = '1';
-    removeBtn.style.visibility = 'visible';
-    progressWrap.style.display = 'none';
-    setProgress(0);
-    setStatus('');
-    successView.classList.add('hidden');
-    formView.classList.remove('hidden');
+  window.addEventListener('online', function () {
+    // Lo que quedó con error de red vuelve a la cola solo.
+    queue.forEach(function (it) {
+      if (it.status === 'error' && !it.fatal) { it.status = 'waiting'; renderItem(it); }
+    });
+    pump();
+  });
+  window.addEventListener('offline', renderSummary);
+
+  window.addEventListener('beforeunload', function (e) {
+    var pending = queue.some(function (it) { return it.status === 'waiting' || it.status === 'uploading'; });
+    if (pending) { e.preventDefault(); e.returnValue = ''; }
   });
 </script>
 

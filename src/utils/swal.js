@@ -30,3 +30,27 @@ export function notifyError(text, title = "Ups") {
     confirmButtonColor: "#B0813F",
   });
 }
+
+export function confirmAction({ title, text, confirmText = "Sí, continuar" }) {
+  return Swal.fire({
+    ...baseConfig,
+    title,
+    text,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: confirmText,
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#B0813F",
+    reverseButtons: true,
+  }).then((result) => result.isConfirmed);
+}
+
+export function notifySuccess(text, title = "¡Listo!") {
+  return Swal.fire({
+    ...baseConfig,
+    icon: "success",
+    title,
+    text,
+    confirmButtonColor: "#B0813F",
+  });
+}
