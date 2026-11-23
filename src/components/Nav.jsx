@@ -1,10 +1,11 @@
+// Post-fiesta: "Fotos" pasa primero; Música y Confirmar quedan comentados
 const NAV_LINKS = [
+  { href: "#fotos",    label: "Fotos" },
   { href: "#historia", label: "Historia" },
   { href: "#evento",   label: "Evento" },
   { href: "#regalos",  label: "Regalos" },
-  { href: "#musica",   label: "Música" },
-  { href: "#fotos",    label: "Fotos" },
-  { href: "#rsvp",     label: "Confirmar" },
+  // { href: "#musica",   label: "Música" },
+  // { href: "#rsvp",     label: "Confirmar" },
 ];
 
 const Nav = () => (

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FaCamera } from "react-icons/fa";
 import Countdown from "./Countdown";
 import DownArrow from "./DownArrow";
 import FloatingPetals from "./FloatingPetals";
@@ -136,6 +137,29 @@ const Hero = () => {
 
         <motion.div {...item(1.35)}>
           <Countdown targetDate={weddingDate} />
+        </motion.div>
+
+        {/* Post-fiesta: llamado a subir fotos */}
+        <motion.div className="mt-8 flex flex-col items-center gap-3" {...item(1.5)}>
+          <p
+            className="font-body italic"
+            style={{ color: "rgba(246,241,231,0.78)", fontSize: "clamp(1rem, 2.6vw, 1.2rem)" }}
+          >
+            ¡Gracias por acompañarnos! ¿Tenés fotos de la fiesta?
+          </p>
+          <a
+            href="/subir-fotos.html"
+            className="inline-flex items-center gap-2 rounded-full px-7 py-3 font-body uppercase shadow-lg transition-transform hover:scale-105"
+            style={{
+              background: "linear-gradient(135deg, #C7A063, #B0813F)",
+              color: "#F6F1E7",
+              letterSpacing: "0.22em",
+              fontSize: "0.85rem",
+              textDecoration: "none",
+            }}
+          >
+            <FaCamera /> Subí tus fotos
+          </a>
         </motion.div>
       </div>
 

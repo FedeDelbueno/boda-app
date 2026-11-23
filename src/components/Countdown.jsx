@@ -1,10 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
 
+// Antes de la fecha: cuenta regresiva.
+// Después de la fecha: cuenta hacia adelante ("Casados hace...").
 const Countdown = ({ targetDate }) => {
   const calculateTime = useCallback(() => {
     const now = new Date();
-    const distance = targetDate - now;
+    const diff = targetDate - now;
+    const isPast = diff <= 0;
+    const distance = Math.abs(diff);
     return {
+      isPast,
       days: Math.floor(distance / (1000 * 60 * 60 * 24)),
       hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((distance / 1000 / 60) % 60),
@@ -47,16 +52,26 @@ const Countdown = ({ targetDate }) => {
   );
 
   return (
-    <section
-      id="CountdownSection"
-      className="flex justify-center flex-wrap py-4"
-      style={{ gap: "clamp(10px, 4vw, 40px)" }}
-    >
-      <Circle label="Días" value={timeLeft.days} />
-      <Circle label="Horas" value={timeLeft.hours} />
-      <Circle label="Minutos" value={timeLeft.minutes} />
-      <Circle label="Segundos" value={timeLeft.seconds} />
-    </section>
+    <div className="flex flex-col items-center">
+      {timeLeft.isPast && (
+        <p
+          className="font-body uppercase mb-4"
+          style={{ letterSpacing: "0.32em", color: "#C7A063", fontSize: "0.85rem" }}
+        >
+          Casados hace
+        </p>
+      )}
+      <section
+        id="CountdownSection"
+        className="flex justify-center flex-wrap py-4"
+        style={{ gap: "clamp(10px, 4vw, 40px)" }}
+      >
+        <Circle label="Días" value={timeLeft.days} />
+        <Circle label="Horas" value={timeLeft.hours} />
+        <Circle label="Minutos" value={timeLeft.minutes} />
+        <Circle label="Segundos" value={timeLeft.seconds} />
+      </section>
+    </div>
   );
 };
 

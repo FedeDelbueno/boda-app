@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 
 import Hero from "../components/Hero";
-import RSVPForm from "../components/RSVPForm";
+// import RSVPForm from "../components/RSVPForm";
 import EventDetails from "../components/EventDetails";
 import WelcomeSection from "../components/WelcomeSection";
 import GiftSection from "../components/GiftSection";
-import InfoSection from "../components/InfoSection";
-import SongsSection from "../components/SongsSection";
+// import InfoSection from "../components/InfoSection";
+// import SongsSection from "../components/SongsSection";
 import DrivePhotoSection from "../components/DrivePhotoSection";
 import Footer from "../components/Footer";
 
@@ -18,7 +18,7 @@ import ScrollProgress from "../components/ScrollProgress";
 import SectionDivider from "../components/SectionDivider";
 import ScrollToTop from "../components/ScrollToTop";
 import ClickSparkle from "../components/ClickSparkle";
-import FloatingRSVPReminder from "../components/FloatingRSVPReminder";
+// import FloatingRSVPReminder from "../components/FloatingRSVPReminder";
 
 const CONFETTI_COLORS = ["#C7A063", "#B0813F", "#8B6530", "#D4A96A", "#F6F1E7", "#EFE7D7"];
 
@@ -83,7 +83,7 @@ function Landing() {
 
   // Confetti al hacer scroll a secciones clave
   useEffect(() => {
-    const TRIGGERS = ["evento", "rsvp"];
+    const TRIGGERS = ["evento"]; // "rsvp" comentado post-fiesta
     const observers = TRIGGERS.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
@@ -155,6 +155,9 @@ function Landing() {
       {/* 1. Hero */}
       <Hero />
 
+      {/* Post-fiesta: Fotos sube justo después del Hero */}
+      <DrivePhotoSection />
+
       {/* Transición Hero → Historia */}
       <HeroTransition />
 
@@ -165,29 +168,29 @@ function Landing() {
       <SectionDivider bg="#F6F1E7" />
       <EventDetails />
 
-      {/* 4. Info — pino oscuro */}
-      <InfoSection />
+      {/* 4. Info (vestimenta + fecha límite de confirmación) — ya pasó la fiesta */}
+      {/* <InfoSection /> */}
 
       {/* 5. Regalos — marfil claro */}
       <SectionDivider bg="#F6F1E7" />
       <GiftSection />
 
-      {/* 6. Música — marfil cálido */}
-      <SectionDivider bg="#EFE7D7" />
-      <SongsSection />
+      {/* 6. Música — ya pasó la fiesta */}
+      {/* <SectionDivider bg="#EFE7D7" />
+      <SongsSection /> */}
 
-      {/* 7. Fotos — pino oscuro */}
-      <SectionDivider bg="#20302A" />
-      <DrivePhotoSection />
+      {/* 7. Fotos — movida arriba, después del Hero */}
+      {/* <SectionDivider bg="#20302A" />
+      <DrivePhotoSection /> */}
 
-      {/* 8. Confirmar asistencia — marfil */}
-      <SectionDivider bg="#EFE7D7" />
-      <RSVPForm />
+      {/* 8. Confirmar asistencia — ya pasó la fiesta */}
+      {/* <SectionDivider bg="#EFE7D7" />
+      <RSVPForm /> */}
 
       <Footer />
 
       <ScrollToTop />
-      <FloatingRSVPReminder />
+      {/* <FloatingRSVPReminder /> */}
     </div>
   );
 }

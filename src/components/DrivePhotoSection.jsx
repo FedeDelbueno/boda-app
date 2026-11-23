@@ -41,16 +41,31 @@ const DrivePhotoSection = () => {
 
       {/* Título */}
       <h2 className="font-script drop-shadow" style={{ color: "#F6F1E7", fontSize: "clamp(2.2rem, 8vw, 4rem)" }}>
-        Compartí tus fotos
+        ¡Revivamos la fiesta!
       </h2>
 
       <div className="w-24 h-px" style={{ background: "linear-gradient(90deg, transparent, #B0813F, transparent)" }} />
 
       {/* Descripción */}
       <p className="font-body text-xl md:text-2xl max-w-xl leading-relaxed" style={{ color: "rgba(246,241,231,0.82)" }}>
-        Escaneá el código y subí las fotos y videos que saques durante la fiesta.
-        ¡Queremos verlo todo desde tus ojos!
+        Gracias por ser parte de nuestro día. Si sacaste fotos o videos,
+        subilos acá: queremos revivir la fiesta desde tus ojos.
       </p>
+
+      {/* Botón directo (desde el celu no se puede escanear el QR de la misma pantalla) */}
+      <a
+        href={DRIVE_URL}
+        className="inline-flex items-center gap-2 rounded-full px-8 py-3 font-body uppercase shadow-lg transition-transform hover:scale-105"
+        style={{
+          background: "linear-gradient(135deg, #C7A063, #B0813F)",
+          color: "#F6F1E7",
+          letterSpacing: "0.22em",
+          fontSize: "0.9rem",
+          textDecoration: "none",
+        }}
+      >
+        <FaCamera /> Subir fotos y videos
+      </a>
 
       {/* QR */}
       <div className="bg-white rounded-2xl p-5 shadow-2xl">
@@ -68,7 +83,7 @@ const DrivePhotoSection = () => {
         className="font-body italic max-w-[260px] leading-relaxed"
         style={{ color: "rgba(246,241,231,0.55)", fontSize: "0.9rem" }}
       >
-        Apuntá la cámara de tu celular al código y subí tus fotos y videos
+        ¿Estás en la compu? Escaneá el código con el celular y subí lo que tengas en la galería
       </p>
     </motion.section>
   );
