@@ -461,7 +461,7 @@
     <span class="field-icon">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </span>
-    <input type="text" id="guestName" placeholder="Tu nombre" maxlength="60" autocomplete="name" />
+    <input type="text" id="guestName" placeholder="Tu nombre (obligatorio)" maxlength="60" autocomplete="name" required />
   </div>
   <p class="hint" id="nameHint"></p>
 
@@ -535,7 +535,6 @@
 
   var queue = [];        // { id, file, guest, status, nextChunk, sentBytes, attempts, el, error }
   var active = 0;
-  var nameWarned = false;
   var wakeLock = null;
 
   // ── Nombre del invitado (se recuerda para la próxima) ──
@@ -550,17 +549,18 @@
     nameHint.className = 'hint' + (warn ? ' warn' : '');
   }
 
+  function requireName() {
+    if (guestNameInput.value.trim()) return true;
+    setHint('Escribí tu nombre para poder subir fotos y videos.', true);
+    guestNameInput.focus();
+    return false;
+  }
+
   // ── Elegir archivos ──
   document.querySelectorAll('[data-pick]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      // Pedimos el nombre una vez (así las fotos quedan ordenadas por
-      // invitado), pero si insiste lo dejamos subir sin nombre.
-      if (!guestNameInput.value.trim() && !nameWarned) {
-        nameWarned = true;
-        setHint('Escribí tu nombre así los novios saben quién la sacó (o tocá de nuevo para seguir sin nombre).', true);
-        guestNameInput.focus();
-        return;
-      }
+      // El nombre es obligatorio: así las fotos quedan ordenadas por invitado.
+      if (!requireName()) return;
       inputs[btn.getAttribute('data-pick')].click();
     });
   });
@@ -581,9 +581,10 @@
   dropZone.addEventListener('drop', function (e) {
     e.preventDefault();
     dropZone.classList.remove('drag-over');
+    if (!requireName()) return;
     if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
   });
-  dropZone.addEventListener('click', function () { inputs.gallery.click(); });
+  dropZone.addEventListener('click', function () { if (requireName()) inputs.gallery.click(); });
 
   function isVideo(file) {
     return /^video\//.test(file.type) || /\.(mp4|mov|m4v|webm|mkv|3gp|avi)$/i.test(file.name);
